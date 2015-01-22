@@ -180,7 +180,7 @@ int GetMin(int* buf,int len,int *CurPos);
 void InsertSort(CALC_DISTANCE *a, int n);
 void shell_sort(CALC_DISTANCE *arr, int len) ;
 void DeleteAtDistance(CALC_DISTANCE *dis,int pos,int len);
-static int CalcPointID(struct PT_BUF *point,int num);
+static int CalcPointID(struct PT_BUF *point,int *num);
 
 extern PT_STATUS g_PointStatus;	
 

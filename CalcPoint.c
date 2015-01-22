@@ -285,7 +285,7 @@ RESTART_LESS:
 	
 	memset(xPointNum,0,sizeof(xPointNum));	//x方向菱形数算出来的实际点个数
 	memset(yPointNum,0,sizeof(yPointNum));	//y方向菱形计算出来的实际点个数
-	for(i = 0;i < PointNumTmp; i++)	//求出每个菱形 拥有的点数
+	for(i = 0;i < PointNumTmp; i++)	//求出每个矩形 拥有的点数
 	{
 		xPointNum[XPoint[DistanceTmp[i].XPos].Rec]++ ;
 		yPointNum[YPoint[DistanceTmp[i].YPos].Rec]++ ;
@@ -301,11 +301,12 @@ RESTART_LESS:
 			{
 				continue;
 			}
-			//删除使用同一个菱形的数据
+			
 			for (j = 0;j < PointNumTmp;j++)
 			{
 				for (k = j+1 ;k < PointNumTmp ;k++)
 				{
+					//删除使用同一个菱形的数据
 					if (DistanceTmp[j].XPos == DistanceTmp[k].XPos)
 					{
 						if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
@@ -324,7 +325,7 @@ RESTART_LESS:
 					//if (DIAMOND_X_GET_C(DiamondBuf,i)% xPointNum[i] == 0) //如果菱形的个数是点的整数倍，那肯定有一个区域内（AD、BC分别为一个区域）所有投影不能复用
 					if((XPoint[DistanceTmp[j].XPos].Rec != i ) || (XPoint[DistanceTmp[k].XPos].Rec != i))	//如果不在同一个矩形里面 没有可比性
 						continue;
-					if ((XProjectionCount[i].ACount + XProjectionCount[i].DCount + 2)>=xPointNum[i])// AD两个三角形投影个数大于等于点个数那么就不能存在投影复用的情况
+					if ((XProjectionCount[i].ACount + XProjectionCount[i].DCount + 2)==xPointNum[i])// AD两个三角形投影个数等于点个数那么就不能存在投影复用的情况
 					{
 						if ((DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[j].XPos].Rec,XPoint[DistanceTmp[j].XPos].Diamond) & 0xffff0000) == 
 							(DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[k].XPos].Rec,XPoint[DistanceTmp[k].XPos].Diamond) & 0xffff0000))
@@ -341,11 +342,15 @@ RESTART_LESS:
 							goto RESTART_LESS;
 						}
 					}
-					else	//投影个数小于点个数 那么 必须每个投影上都会有点 如果两个点投影相同则需要校正坐标
+					else if ((XProjectionCount[i].ACount + XProjectionCount[i].DCount + 2) < xPointNum[i])	//AD两个三角形投影个数小于点个数那么 保证每帧都有投影
 					{
-						
+
 					}
-					if ((XProjectionCount[i].BCount + XProjectionCount[i].CCount + 2)>=xPointNum[i]) // BC两个三角形投影个数大于等于点个数那么就不能存在投影复用的情况
+					else// AD两个三角形投影个数大于点个数那么 这就是一个错误帧
+					{
+					}
+					
+					if ((XProjectionCount[i].BCount + XProjectionCount[i].CCount + 2)==xPointNum[i]) // BC两个三角形投影个数等于点个数那么就不能存在投影复用的情况
 					{
 						if ((DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[j].XPos].Rec,XPoint[DistanceTmp[j].XPos].Diamond) &0x0000ffff) == 
 							(DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[k].XPos].Rec,XPoint[DistanceTmp[k].XPos].Diamond) &0x0000ffff))
@@ -362,10 +367,16 @@ RESTART_LESS:
 							goto RESTART_LESS;
 						}
 					}
-					else	//投影个数小于点个数 那么 必须每个投影上都会有点 
+					else if ((XProjectionCount[i].BCount + XProjectionCount[i].CCount + 2) < xPointNum[i]) // BC两个三角形投影个数小于点个数那么就不能存在投影复用的情况
 					{
-						
+
 					}
+					else // BC两个三角形投影个数大于点个数 这是一个错误的数据帧
+					{
+					
+					}
+					
+					
 				}
 			}
 
@@ -409,9 +420,9 @@ RESTART_LESS:
 					}
 
 					//某些情况下，一个投影内只有一个点，必须删除同一个投影中重合的数据
-					if((YPoint[DistanceTmp[j].YPos].Rec !=j)||(YPoint[DistanceTmp[k].YPos].Rec != j))	//如果两个点不在一个矩形里面 不具备这个条件
+					if((YPoint[DistanceTmp[j].YPos].Rec != i)||(YPoint[DistanceTmp[k].YPos].Rec != i))	//如果两个点不在一个矩形里面 不具备这个条件
 						continue;
-					if ((YProjectionCount[i].ACount + YProjectionCount[i].DCount + 2)>=yPointNum[i])// AD两个三角形投影个数大于等于点个数那么就不能存在投影复用的情况
+					if ((YProjectionCount[i].ACount + YProjectionCount[i].DCount + 2)==yPointNum[i])// AD两个三角形投影个数等于点个数那么就不能存在投影复用的情况
 					{
 						if ((DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[j].YPos].Rec,YPoint[DistanceTmp[j].YPos].Diamond) &0xffff0000) == 
 							(DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[k].YPos].Rec,YPoint[DistanceTmp[k].YPos].Diamond) &0xffff0000))
@@ -428,12 +439,16 @@ RESTART_LESS:
 							goto RESTART_LESS;
 						}
 					}
-					else	//投影个数小于点个数 那么 必须每个投影上都会有点 
+					else if ((YProjectionCount[i].ACount + YProjectionCount[i].DCount + 2) < yPointNum[i])// AD两个三角形投影个数小于点个数那么必须每个投影上都会有点
+					{
+
+					}
+					else// AD两个三角形投影个数大于这有可能是一个错误帧
 					{
 
 					}
 
-					if ((YProjectionCount[i].BCount + YProjectionCount[i].CCount + 2)>=yPointNum[i]) // BC两个三角形投影个数大于等于点个数那么就不能存在投影复用的情况
+					if ((YProjectionCount[i].BCount + YProjectionCount[i].CCount + 2)==yPointNum[i]) // BC两个三角形投影个数等于点个数那么就不能存在投影复用的情况
 					{
 						if ((DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[j].YPos].Rec,YPoint[DistanceTmp[j].YPos].Diamond) &0x0000ffff) == 
 							(DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[k].YPos].Rec,YPoint[DistanceTmp[k].YPos].Diamond) &0x0000ffff))
@@ -449,12 +464,15 @@ RESTART_LESS:
 							PointNumTmp --;
 							goto RESTART_LESS;
 						}
-						else	//投影个数小于点个数 那么 必须每个投影上都会有点 
-						{
-
-						}
 					}
+					else if ((YProjectionCount[i].BCount + YProjectionCount[i].CCount + 2) < yPointNum[i]) // BC两个三角形投影个数小于点个数那么保证每个投影上都有点
+					{
 
+					}
+					else  // BC两个三角形投影个数大于点个数那么这是一个错误帧
+					{
+					}
+					
 				}
 			}
 		}
@@ -487,7 +505,7 @@ COPY_POINT:
 	{
 		for (k = j+1 ;k < PointNumTmp ;k++)
 		{
-			if((XPoint[DistanceTmp[j].XPos].Rec == i ) && (XPoint[DistanceTmp[k].XPos].Rec == i))	//如果不在同一个矩形里面 没有可比性
+			if(XPoint[DistanceTmp[j].XPos].Rec == XPoint[DistanceTmp[k].XPos].Rec)	//如果不在同一个矩形里面 没有可比性
 			{
 				if ((DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[j].XPos].Rec,XPoint[DistanceTmp[j].XPos].Diamond) & 0xffff0000) == 
 					(DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[k].XPos].Rec,XPoint[DistanceTmp[k].XPos].Diamond) & 0xffff0000))
@@ -506,7 +524,7 @@ COPY_POINT:
 						YPoint[DistanceTmp[k].YPos].Point.y,XPoint[DistanceTmp[j].XPos].Rec);
 				}
 			}
-			if((YPoint[DistanceTmp[j].YPos].Rec ==j)&&(YPoint[DistanceTmp[k].YPos].Rec == j))	//如果两个点不在一个矩形里面 不具备这个条件
+			if(YPoint[DistanceTmp[j].YPos].Rec == YPoint[DistanceTmp[k].YPos].Rec)	//如果两个点不在一个矩形里面 不具备这个条件
 			{
 
 				if ((DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[j].YPos].Rec,YPoint[DistanceTmp[j].YPos].Diamond) & 0xffff0000) == 
@@ -536,7 +554,7 @@ COPY_POINT:
 static int CalcPointID(struct PT_BUF *point,int* num)
 {
 	int i,j;
-	int min_pos;
+	int min_pos,first;
 	int min_distance;
 	int distance_tem;
 	if (*num > MAX_POINT)
@@ -570,14 +588,22 @@ static int CalcPointID(struct PT_BUF *point,int* num)
 
 		for (i=0;i<*num;i++)
 		{
-			min_distance = CalclDistance_Short(&point[i].pt_val, &g_PointStatus.LastPoint[0].pt_val);
-			min_pos = 0;
+
+			first = 0;
 			for (j=0;j<MAX_POINT;j++)
 			{
 				if (g_PointStatus.LastPoint[j].id == 0)
 				{
 					continue;
 				}
+				if (first == 0)
+				{
+					min_distance =  CalclDistance_Short(&point[i].pt_val, &g_PointStatus.LastPoint[j].pt_val);
+					min_pos = j;
+					first = 1;
+					continue;
+				}
+				
 				distance_tem = CalclDistance_Short(&point[i].pt_val, &g_PointStatus.LastPoint[j].pt_val);
 				if (min_distance > distance_tem)
 				{
