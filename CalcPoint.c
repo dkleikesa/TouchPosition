@@ -325,6 +325,11 @@ RESTART_LESS:
 					//if (DIAMOND_X_GET_C(DiamondBuf,i)% xPointNum[i] == 0) //如果菱形的个数是点的整数倍，那肯定有一个区域内（AD、BC分别为一个区域）所有投影不能复用
 					if((XPoint[DistanceTmp[j].XPos].Rec != i ) || (XPoint[DistanceTmp[k].XPos].Rec != i))	//如果不在同一个矩形里面 没有可比性
 						continue;
+					if(((XProjectionCount[i].ACount + XProjectionCount[i].DCount + 2) > xPointNum[i]) ||// AD两个三角形投影个数大于点个数那么 这就是一个错误帧
+					((XProjectionCount[i].BCount + XProjectionCount[i].CCount + 2) > xPointNum[i])) // BC两个三角形投影个数大于点个数 这是一个错误的数据帧
+					{
+						continue;
+					}
 					if ((XProjectionCount[i].ACount + XProjectionCount[i].DCount + 2)==xPointNum[i])// AD两个三角形投影个数等于点个数那么就不能存在投影复用的情况
 					{
 						if ((DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[j].XPos].Rec,XPoint[DistanceTmp[j].XPos].Diamond) & 0xffff0000) == 
@@ -346,9 +351,7 @@ RESTART_LESS:
 					{
 
 					}
-					else// AD两个三角形投影个数大于点个数那么 这就是一个错误帧
-					{
-					}
+					
 					
 					if ((XProjectionCount[i].BCount + XProjectionCount[i].CCount + 2)==xPointNum[i]) // BC两个三角形投影个数等于点个数那么就不能存在投影复用的情况
 					{
@@ -371,12 +374,6 @@ RESTART_LESS:
 					{
 
 					}
-					else // BC两个三角形投影个数大于点个数 这是一个错误的数据帧
-					{
-					
-					}
-					
-					
 				}
 			}
 
@@ -422,6 +419,11 @@ RESTART_LESS:
 					//某些情况下，一个投影内只有一个点，必须删除同一个投影中重合的数据
 					if((YPoint[DistanceTmp[j].YPos].Rec != i)||(YPoint[DistanceTmp[k].YPos].Rec != i))	//如果两个点不在一个矩形里面 不具备这个条件
 						continue;
+					if (((YProjectionCount[i].ACount + YProjectionCount[i].DCount + 2) > yPointNum[i])||
+						((YProjectionCount[i].BCount + YProjectionCount[i].CCount + 2) > yPointNum[i]))// AD或者BC两个三角形投影个数大于点个数那么这是一个错误帧
+					{
+					  continue;
+					}
 					if ((YProjectionCount[i].ACount + YProjectionCount[i].DCount + 2)==yPointNum[i])// AD两个三角形投影个数等于点个数那么就不能存在投影复用的情况
 					{
 						if ((DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[j].YPos].Rec,YPoint[DistanceTmp[j].YPos].Diamond) &0xffff0000) == 
@@ -443,10 +445,7 @@ RESTART_LESS:
 					{
 
 					}
-					else// AD两个三角形投影个数大于这有可能是一个错误帧
-					{
-
-					}
+					
 
 					if ((YProjectionCount[i].BCount + YProjectionCount[i].CCount + 2)==yPointNum[i]) // BC两个三角形投影个数等于点个数那么就不能存在投影复用的情况
 					{
@@ -469,9 +468,7 @@ RESTART_LESS:
 					{
 
 					}
-					else  // BC两个三角形投影个数大于点个数那么这是一个错误帧
-					{
-					}
+					
 					
 				}
 			}
