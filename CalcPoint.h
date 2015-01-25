@@ -18,7 +18,7 @@
 #define DISTANCE_THRESHOLD 20*20		//两个菱形相距20 以内 则认为是相交的
 #define DISTANCE_THRESHOLD_WC	40*40	//特殊情况下可以延长到40
 #define DISTANCE_THRESHOLD_ID		50*50	//两次两个点间距在50以内则认为这两个点ID相同
-#define TIMES_THRESHOLD_UP		5	//连续检测到TIMES_THRESHOLD_UP 次这个点没数据就认为这个点已经抬起
+#define TIMES_THRESHOLD_UP		3	//连续检测到TIMES_THRESHOLD_UP 次这个点没数据就认为这个点已经抬起
 
 #define TOTAL_LENGTH	128*SCAN_X_SQUARE_NUM	//白板总宽度
 #define TATAL_HEIGHT	128*(SCAN_Y_SQUARE_NUM-1) + 72 //白板总高度
