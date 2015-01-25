@@ -66,8 +66,6 @@ void PrintDiamond(CALC_DIAMOND_BUF *DiamondBuf,char *OutBuf,int ScanCount)
 			continue;
 		for(j=0;j<DiamondBuf->strXSquareDiamond[i].ulDiamondCount;j++)
 		{
-			if(DiamondBuf->strXSquareDiamond[i].strDiamondPoint[j].ulDiamondNum == 0)
-				continue;
 			n += sprintf(OutBuf+n,"%8d%9d   0x%08x (%4d,%4d) (%4d,%4d) (%4d,%4d) (%4d,%4d)\r\n",i,
 				DIAMOND_X_GET_C(DiamondBuf,i),DIAMOND_X_GET_N(DiamondBuf,i,j),
 				CALCL_REL_TO_ABS(DIAMOND_X_GET(DiamondBuf,i,j,0).x,i),DIAMOND_X_GET(DiamondBuf,i,j,0).y,
@@ -84,8 +82,6 @@ void PrintDiamond(CALC_DIAMOND_BUF *DiamondBuf,char *OutBuf,int ScanCount)
 			continue;
 		for(j=0;j<DiamondBuf->strYSquareDiamond[i].ulDiamondCount;j++)
 		{
-			if(DiamondBuf->strYSquareDiamond[i].strDiamondPoint[j].ulDiamondNum == 0)
-				continue;
 			n += sprintf(OutBuf+n,"%8d%9d   0x%08x (%4d,%4d) (%4d,%4d) (%4d,%4d) (%4d,%4d)\r\n",i,
 				DIAMOND_Y_GET_C(DiamondBuf,i),DIAMOND_Y_GET_N(DiamondBuf,i,j),
 				DIAMOND_Y_GET(DiamondBuf,i,j,0).x,CALCL_REL_TO_ABS(DIAMOND_Y_GET(DiamondBuf,i,j,0).y,i),
@@ -117,7 +113,6 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 	yDiamondNum = 0;	//y方向有效菱形 中心点个数
 	disNUM = 0;	//中心点间距个数
 	PointNum = 0;	//最终点的个数
-
 	xPointNumSum = 0;
 	yPointNumSum = 0;
 	PointNumTmp = 0; //根据中心点距离计算出来的触摸点个数， 可能存在假点或者少点
@@ -129,14 +124,7 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 	{	
 		if(DIAMOND_X_GET_C(DiamondBuf,i) ==0)
 			continue;
-		for (k=1;k<=MAX_POINT_REC;k++)	//计算X有效点个数
-		{
-			if (DIAMOND_X_GET_C(DiamondBuf,i) <= (k*k))
-			{
-				xPointNumSum += k;
-				break;
-			}
-		}
+
 		for(j=0;j<DIAMOND_X_GET_C(DiamondBuf,i);j++)
 		{
 			if(DIAMOND_X_GET_N(DiamondBuf,i,j) == 0)
@@ -186,14 +174,6 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 	{
 		if(DIAMOND_Y_GET_C(DiamondBuf,i) ==0)
 			continue;
-		for (k=1;k<=MAX_POINT_REC;k++)	//计算Y有效点个数
-		{
-			if (DIAMOND_Y_GET_C(DiamondBuf,i) <= (k*k))
-			{
-				yPointNumSum += k;
-				break;
-			}
-		}
 		for(j=0;j<DIAMOND_Y_GET_C(DiamondBuf,i);j++)
 		{
 			if(DIAMOND_Y_GET_N(DiamondBuf,i,j) == 0)
@@ -241,16 +221,16 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 
 	/*for(i = 0; i<xDiamondNum ;i ++)
 	{
-		point[i].x = XPoint[i].Point.x;
-		point[i].y = XPoint[i].Point.y;
-		
+	point[i].x = XPoint[i].Point.x;
+	point[i].y = XPoint[i].Point.y;
+
 	}
 	j = 0;
 	for(;i<(yDiamondNum+xDiamondNum);i++)
 	{
-		point[j].x = YPoint[j].Point.x;
-		point[j].y = YPoint[j].Point.y;
-		j++;
+	point[j].x = YPoint[j].Point.x;
+	point[j].y = YPoint[j].Point.y;
+	j++;
 	}
 	return yDiamondNum+xDiamondNum;*/
 	//计算出所有中心点间距
@@ -264,11 +244,48 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 			disNUM++;
 		}
 	}
-//	goto COPY_POINT;
+	//	goto COPY_POINT;
+	memset(xPointNum,0,sizeof(xPointNum));	//x方向菱形数算出来的实际点个数
+	memset(yPointNum,0,sizeof(yPointNum));	//y方向菱形计算出来的实际点个数
+	for(i = 0;i < SCAN_X_SQUARE_NUM; i++)
+	{
+		/*xPointNum[i] = max((XProjectionCount[i].ACount + XProjectionCount[i].DCount + 2),
+			(XProjectionCount[i].BCount + XProjectionCount[i].CCount + 2));
+		xPointNumSum += xPointNum[i];*/
+		if(DIAMOND_X_GET_C(DiamondBuf,i) ==0)
+			continue;
+		for (k=1;k<=MAX_POINT_REC;k++)
+		{
+		    if (DIAMOND_X_GET_C(DiamondBuf,i) <= (k*k))
+		    {
+				xPointNum[i] = k;
+				xPointNumSum += k;
+		        break;
+		    }
+		 }
+
+	}
+	for(i = 0;i < SCAN_Y_SQUARE_NUM; i++)
+	{
+		/*yPointNum[i] =  max((YProjectionCount[i].ACount + YProjectionCount[i].DCount + 2),
+			(YProjectionCount[i].BCount + YProjectionCount[i].CCount + 2));
+		yPointNumSum += yPointNum[i];*/
+		if(DIAMOND_Y_GET_C(DiamondBuf,i) ==0)
+			continue;
+		for (k=1;k<=MAX_POINT_REC;k++)
+		{
+			if (DIAMOND_Y_GET_C(DiamondBuf,i) <= (k*k))
+			{
+				yPointNum[i] = k;
+				yPointNumSum += k;
+				break;
+			}
+		}
+	}
 	PointNum = ((xPointNumSum>yPointNumSum) ? xPointNumSum : yPointNumSum);	//最终是实际点数应该是两者中的 较大值
 	shell_sort(DistanceTmp,disNUM);	//排序
 	PointNumTmp = GetThresholdPos(DistanceTmp, disNUM);	//获取点个数
-
+	PRINTFF("xPoint=%d yPoint=%d PointNum=%d PointNumTmp=%d\r\n",xPointNumSum,yPointNumSum,PointNum,PointNumTmp);
 	/*3175-3375 多点*/
 	/*2f75 少点且通过距离判断点错误 需要通过投影来确定*/ 
 	/*2c75 少点通过且距离可以判断出正确点*/
@@ -282,26 +299,33 @@ RESTART_LESS:
 			PointNumTmp++;	//确实少点 那就按照 少点来计算
 		}
 	}
-	
-	memset(xPointNum,0,sizeof(xPointNum));	//x方向菱形数算出来的实际点个数
-	memset(yPointNum,0,sizeof(yPointNum));	//y方向菱形计算出来的实际点个数
-	for(i = 0;i < PointNumTmp; i++)	//求出每个矩形 拥有的点数
-	{
-		xPointNum[XPoint[DistanceTmp[i].XPos].Rec]++ ;
-		yPointNum[YPoint[DistanceTmp[i].YPos].Rec]++ ;
-	}
+
+	//memset(xPointNum,0,sizeof(xPointNum));	//x方向菱形数算出来的实际点个数
+	//memset(yPointNum,0,sizeof(yPointNum));	//y方向菱形计算出来的实际点个数
+	//for(i = 0;i < PointNumTmp; i++)	//求出每个矩形 拥有的点数
+	//{
+	//	xPointNum[XPoint[DistanceTmp[i].XPos].Rec]++ ;
+	//	yPointNum[YPoint[DistanceTmp[i].YPos].Rec]++ ;
+	//}
 
 	for(i = 0;i < SCAN_X_SQUARE_NUM; i++)  
 	{
-		if(xPointNum[i] ==0)
+		if(xPointNum[i] ==0)	//没有点 略过
 			continue;
-		if (DIAMOND_X_GET_C(DiamondBuf,i) >= xPointNum[i])	//菱形个数比点多 不能有菱形重复使用的情况
+		//if ((PointNum == 3)&&(DIAMOND_X_GET_C(DiamondBuf,i)==4))//3点4个投影时 有可能存在公用菱形 也可能不存在默认存在 
+		//{
+		//	continue;
+		//}
+		if(((XProjectionCount[i].ACount + XProjectionCount[i].DCount + 2) > xPointNum[i]) ||// AD两个三角形投影个数大于点个数那么 这就是一个错误帧
+			((XProjectionCount[i].BCount + XProjectionCount[i].CCount + 2) > xPointNum[i])) // BC两个三角形投影个数大于点个数 这是一个错误的数据帧
 		{
-			if ((PointNum == 3)&&(DIAMOND_X_GET_C(DiamondBuf,i)==4))//3点4个投影时 有可能存在公用菱形 也可能不存在默认存在 
-			{
-				continue;
-			}
-			
+			continue;
+		}
+
+		//3点的 田字形 2点的 口字型 不能有重复的菱形 和重复的投影
+		if (((XProjectionCount[i].ACount + XProjectionCount[i].DCount + 2)==xPointNum[i])&&
+			((XProjectionCount[i].BCount + XProjectionCount[i].CCount + 2)==xPointNum[i])) 
+		{
 			for (j = 0;j < PointNumTmp;j++)
 			{
 				for (k = j+1 ;k < PointNumTmp ;k++)
@@ -322,68 +346,148 @@ RESTART_LESS:
 					}
 
 					//某些情况下，一个投影内只有一个点，必须删除同一个投影中重合的数据
-					//if (DIAMOND_X_GET_C(DiamondBuf,i)% xPointNum[i] == 0) //如果菱形的个数是点的整数倍，那肯定有一个区域内（AD、BC分别为一个区域）所有投影不能复用
+
 					if((XPoint[DistanceTmp[j].XPos].Rec != i ) || (XPoint[DistanceTmp[k].XPos].Rec != i))	//如果不在同一个矩形里面 没有可比性
 						continue;
-					if(((XProjectionCount[i].ACount + XProjectionCount[i].DCount + 2) > xPointNum[i]) ||// AD两个三角形投影个数大于点个数那么 这就是一个错误帧
-					((XProjectionCount[i].BCount + XProjectionCount[i].CCount + 2) > xPointNum[i])) // BC两个三角形投影个数大于点个数 这是一个错误的数据帧
-					{
-						continue;
-					}
-					if ((XProjectionCount[i].ACount + XProjectionCount[i].DCount + 2)==xPointNum[i])// AD两个三角形投影个数等于点个数那么就不能存在投影复用的情况
-					{
-						if ((DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[j].XPos].Rec,XPoint[DistanceTmp[j].XPos].Diamond) & 0xffff0000) == 
-							(DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[k].XPos].Rec,XPoint[DistanceTmp[k].XPos].Diamond) & 0xffff0000))
-						{
-							if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
-							{
-								DeleteAtDistance(DistanceTmp,j,&disNUM);
-							}
-							else
-							{
-								DeleteAtDistance(DistanceTmp,k,&disNUM);
-							}
-							PointNumTmp --;
-							goto RESTART_LESS;
-						}
-					}
-					else if ((XProjectionCount[i].ACount + XProjectionCount[i].DCount + 2) < xPointNum[i])	//AD两个三角形投影个数小于点个数那么 保证每帧都有投影
-					{
 
-					}
-					
-					
-					if ((XProjectionCount[i].BCount + XProjectionCount[i].CCount + 2)==xPointNum[i]) // BC两个三角形投影个数等于点个数那么就不能存在投影复用的情况
+					if ((DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[j].XPos].Rec,XPoint[DistanceTmp[j].XPos].Diamond) & 0xffff0000) == //删除AD两个三角形里面重复使用投影的的点
+						(DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[k].XPos].Rec,XPoint[DistanceTmp[k].XPos].Diamond) & 0xffff0000))
 					{
-						if ((DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[j].XPos].Rec,XPoint[DistanceTmp[j].XPos].Diamond) &0x0000ffff) == 
-							(DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[k].XPos].Rec,XPoint[DistanceTmp[k].XPos].Diamond) &0x0000ffff))
+						if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
 						{
-							if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
-							{
-								DeleteAtDistance(DistanceTmp,j,&disNUM);
-							}
-							else
-							{
-								DeleteAtDistance(DistanceTmp,k,&disNUM);
-							}
-							PointNumTmp --;
-							goto RESTART_LESS;
+							DeleteAtDistance(DistanceTmp,j,&disNUM);
 						}
+						else
+						{
+							DeleteAtDistance(DistanceTmp,k,&disNUM);
+						}
+						PointNumTmp --;
+						goto RESTART_LESS;
 					}
-					else if ((XProjectionCount[i].BCount + XProjectionCount[i].CCount + 2) < xPointNum[i]) // BC两个三角形投影个数小于点个数那么就不能存在投影复用的情况
-					{
 
+					if ((DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[j].XPos].Rec,XPoint[DistanceTmp[j].XPos].Diamond) &0x0000ffff) ==  //删除BC两个三角形里面重复使用投影的的点
+						(DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[k].XPos].Rec,XPoint[DistanceTmp[k].XPos].Diamond) &0x0000ffff))
+					{
+						if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
+						{
+							DeleteAtDistance(DistanceTmp,j,&disNUM);
+						}
+						else
+						{
+							DeleteAtDistance(DistanceTmp,k,&disNUM);
+						}
+						PointNumTmp --;
+						goto RESTART_LESS;
 					}
+
 				}
 			}
-
-			
 		}
-		else	//菱形个数比点少，则肯定有菱形重复使用 保证每个菱形都有点 或者每个投影都有点
+
+		//3点的 日字形 2点的 以字型 不能有重复的菱形 AD不能重复的投影 BC 必须每个投影都有点
+		if (((XProjectionCount[i].ACount + XProjectionCount[i].DCount + 2)==xPointNum[i])&&
+			((XProjectionCount[i].BCount + XProjectionCount[i].CCount + 2) < xPointNum[i])) 
 		{
-			
+			for (j = 0;j < PointNumTmp;j++)
+			{
+				for (k = j+1 ;k < PointNumTmp ;k++)
+				{
+					//删除使用同一个菱形的数据
+					if (DistanceTmp[j].XPos == DistanceTmp[k].XPos)
+					{
+						if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
+						{
+							DeleteAtDistance(DistanceTmp,j,&disNUM);
+						}
+						else
+						{
+							DeleteAtDistance(DistanceTmp,k,&disNUM);
+						}
+						PointNumTmp --;
+						goto RESTART_LESS;
+					}
+
+					//某些情况下，一个投影内只有一个点，必须删除同一个投影中重合的数据
+
+					if((XPoint[DistanceTmp[j].XPos].Rec != i ) || (XPoint[DistanceTmp[k].XPos].Rec != i))	//如果不在同一个矩形里面 没有可比性
+						continue;
+
+					if ((DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[j].XPos].Rec,XPoint[DistanceTmp[j].XPos].Diamond) & 0xffff0000) == //删除AD两个三角形里面重复使用投影的的点
+						(DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[k].XPos].Rec,XPoint[DistanceTmp[k].XPos].Diamond) & 0xffff0000))
+					{
+						if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
+						{
+							DeleteAtDistance(DistanceTmp,j,&disNUM);
+						}
+						else
+						{
+							DeleteAtDistance(DistanceTmp,k,&disNUM);
+						}
+						PointNumTmp --;
+						goto RESTART_LESS;
+					}
+
+					//每个投影都有点 。。。。。
+
+				}
+			}
+		}
+
+		//3点的 日字形 2点的 一字型 不能有重复的菱形 BC不能重复的投影 AD必须每个投影都有点
+		if (((XProjectionCount[i].ACount + XProjectionCount[i].DCount + 2) < xPointNum[i])&&
+			((XProjectionCount[i].BCount + XProjectionCount[i].CCount + 2)  == xPointNum[i]))
+		{
+			for (j = 0;j < PointNumTmp;j++)
+			{
+				for (k = j+1 ;k < PointNumTmp ;k++)
+				{
+					//删除使用同一个菱形的数据
+					if (DistanceTmp[j].XPos == DistanceTmp[k].XPos)
+					{
+						if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
+						{
+							DeleteAtDistance(DistanceTmp,j,&disNUM);
+						}
+						else
+						{
+							DeleteAtDistance(DistanceTmp,k,&disNUM);
+						}
+						PointNumTmp --;
+						goto RESTART_LESS;
+					}
+
+					//某些情况下，一个投影内只有一个点，必须删除同一个投影中重合的数据
+
+					if((XPoint[DistanceTmp[j].XPos].Rec != i ) || (XPoint[DistanceTmp[k].XPos].Rec != i))	//如果不在同一个矩形里面 没有可比性
+						continue;
+
+					if ((DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[j].XPos].Rec,XPoint[DistanceTmp[j].XPos].Diamond) &0x0000ffff) ==  //删除BC两个三角形里面重复使用投影的的点
+						(DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[k].XPos].Rec,XPoint[DistanceTmp[k].XPos].Diamond) &0x0000ffff))
+					{
+						if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
+						{
+							DeleteAtDistance(DistanceTmp,j,&disNUM);
+						}
+						else
+						{
+							DeleteAtDistance(DistanceTmp,k,&disNUM);
+						}
+						PointNumTmp --;
+						goto RESTART_LESS;
+					}
+
+					//每个投影都有点 。。。。。
+
+				}
+			}
+		}
+		//每个投影都有点
+		if (((XProjectionCount[i].ACount + XProjectionCount[i].DCount + 2) < xPointNum[i])&&
+			((XProjectionCount[i].BCount + XProjectionCount[i].CCount + 2) < xPointNum[i])) 
+		{
 
 		}
+
 	}
 
 	for(i = 0;i < SCAN_Y_SQUARE_NUM; i++) 
@@ -391,17 +495,25 @@ RESTART_LESS:
 		if(yPointNum[i] ==0)
 			continue;
 
-		if (DIAMOND_Y_GET_C(DiamondBuf,i) >= yPointNum[i])	//菱形个数比点多 不能有菱形重复使用的情况
+		//if ((PointNum == 3)&&(DIAMOND_Y_GET_C(DiamondBuf,i)==4))//3点4个投影时 有可能存在公用菱形 也可能不存在默认不存在 
+		//{
+		//	continue;
+		//}
+
+		if (((YProjectionCount[i].ACount + YProjectionCount[i].DCount + 2) > yPointNum[i])||
+			((YProjectionCount[i].BCount + YProjectionCount[i].CCount + 2) > yPointNum[i]))// AD或者BC两个三角形投影个数大于点个数那么这是一个错误帧
 		{
-			if ((PointNum == 3)&&(DIAMOND_Y_GET_C(DiamondBuf,i)==4))//3点4个投影时 有可能存在公用菱形 也可能不存在默认不存在 
-			{
-				continue;
-			}
-			//删除使用同一个菱形的数据
+			continue;
+		}
+
+		if (((YProjectionCount[i].ACount + YProjectionCount[i].DCount + 2) == yPointNum[i])&& // AD两个三角形投影个数等于点个数那么就不能存在投影复用的情况
+			((YProjectionCount[i].BCount + YProjectionCount[i].CCount + 2) == yPointNum[i]))// BC两个三角形投影个数等于点个数那么就不能存在投影复用的情况
+		{
 			for (j = 0;j < PointNumTmp;j++)
 			{
 				for (k = j+1 ;k < PointNumTmp ;k++)
 				{
+					//删除使用同一个菱形的数据
 					if (DistanceTmp[j].YPos == DistanceTmp[k].YPos)
 					{
 						if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
@@ -419,67 +531,140 @@ RESTART_LESS:
 					//某些情况下，一个投影内只有一个点，必须删除同一个投影中重合的数据
 					if((YPoint[DistanceTmp[j].YPos].Rec != i)||(YPoint[DistanceTmp[k].YPos].Rec != i))	//如果两个点不在一个矩形里面 不具备这个条件
 						continue;
-					if (((YProjectionCount[i].ACount + YProjectionCount[i].DCount + 2) > yPointNum[i])||
-						((YProjectionCount[i].BCount + YProjectionCount[i].CCount + 2) > yPointNum[i]))// AD或者BC两个三角形投影个数大于点个数那么这是一个错误帧
+
+					if ((DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[j].YPos].Rec,YPoint[DistanceTmp[j].YPos].Diamond) &0xffff0000) == 
+						(DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[k].YPos].Rec,YPoint[DistanceTmp[k].YPos].Diamond) &0xffff0000))
 					{
-					  continue;
-					}
-					if ((YProjectionCount[i].ACount + YProjectionCount[i].DCount + 2)==yPointNum[i])// AD两个三角形投影个数等于点个数那么就不能存在投影复用的情况
-					{
-						if ((DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[j].YPos].Rec,YPoint[DistanceTmp[j].YPos].Diamond) &0xffff0000) == 
-							(DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[k].YPos].Rec,YPoint[DistanceTmp[k].YPos].Diamond) &0xffff0000))
+						if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
 						{
-							if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
-							{
-								DeleteAtDistance(DistanceTmp,j,&disNUM);
-							}
-							else
-							{
-								DeleteAtDistance(DistanceTmp,k,&disNUM);
-							}
-							PointNumTmp --;
-							goto RESTART_LESS;
+							DeleteAtDistance(DistanceTmp,j,&disNUM);
 						}
-					}
-					else if ((YProjectionCount[i].ACount + YProjectionCount[i].DCount + 2) < yPointNum[i])// AD两个三角形投影个数小于点个数那么必须每个投影上都会有点
-					{
-
-					}
-					
-
-					if ((YProjectionCount[i].BCount + YProjectionCount[i].CCount + 2)==yPointNum[i]) // BC两个三角形投影个数等于点个数那么就不能存在投影复用的情况
-					{
-						if ((DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[j].YPos].Rec,YPoint[DistanceTmp[j].YPos].Diamond) &0x0000ffff) == 
-							(DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[k].YPos].Rec,YPoint[DistanceTmp[k].YPos].Diamond) &0x0000ffff))
+						else
 						{
-							if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
-							{
-								DeleteAtDistance(DistanceTmp,j,&disNUM);
-							}
-							else
-							{
-								DeleteAtDistance(DistanceTmp,k,&disNUM);
-							}
-							PointNumTmp --;
-							goto RESTART_LESS;
+							DeleteAtDistance(DistanceTmp,k,&disNUM);
 						}
+						PointNumTmp --;
+						goto RESTART_LESS;
 					}
-					else if ((YProjectionCount[i].BCount + YProjectionCount[i].CCount + 2) < yPointNum[i]) // BC两个三角形投影个数小于点个数那么保证每个投影上都有点
-					{
 
+					if ((DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[j].YPos].Rec,YPoint[DistanceTmp[j].YPos].Diamond) &0x0000ffff) == 
+						(DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[k].YPos].Rec,YPoint[DistanceTmp[k].YPos].Diamond) &0x0000ffff))
+					{
+						if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
+						{
+							DeleteAtDistance(DistanceTmp,j,&disNUM);
+						}
+						else
+						{
+							DeleteAtDistance(DistanceTmp,k,&disNUM);
+						}
+						PointNumTmp --;
+						goto RESTART_LESS;
 					}
-					
+				}
+			}
+		}
+		//3点的 日字形 2点的 以字型 不能有重复的菱形 AD不能重复的投影 BC 必须每个投影都有点
+		if (((YProjectionCount[i].ACount + YProjectionCount[i].DCount + 2) == yPointNum[i])&& // AD两个三角形投影个数等于点个数那么就不能存在投影复用的情况
+			((YProjectionCount[i].BCount + YProjectionCount[i].CCount + 2) < yPointNum[i]))// BC两个三角形投影个数小于点个数那么每个菱形都有点
+		{
+
+			for (j = 0;j < PointNumTmp;j++)
+			{
+				for (k = j+1 ;k < PointNumTmp ;k++)
+				{
+					//删除使用同一个菱形的数据
+					if (DistanceTmp[j].YPos == DistanceTmp[k].YPos)
+					{
+						if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
+						{
+							DeleteAtDistance(DistanceTmp,j,&disNUM);
+						}
+						else
+						{
+							DeleteAtDistance(DistanceTmp,k,&disNUM);
+						}
+						PointNumTmp --;
+						goto RESTART_LESS;
+					}
+
+					//某些情况下，一个投影内只有一个点，必须删除同一个投影中重合的数据
+					if((YPoint[DistanceTmp[j].YPos].Rec != i)||(YPoint[DistanceTmp[k].YPos].Rec != i))	//如果两个点不在一个矩形里面 不具备这个条件
+						continue;
+
+					if ((DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[j].YPos].Rec,YPoint[DistanceTmp[j].YPos].Diamond) &0xffff0000) == 
+						(DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[k].YPos].Rec,YPoint[DistanceTmp[k].YPos].Diamond) &0xffff0000))
+					{
+						if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
+						{
+							DeleteAtDistance(DistanceTmp,j,&disNUM);
+						}
+						else
+						{
+							DeleteAtDistance(DistanceTmp,k,&disNUM);
+						}
+						PointNumTmp --;
+						goto RESTART_LESS;
+					}
+					//每个投影都有点 。。。。。
 					
 				}
 			}
 		}
-		else	//菱形个数比点少，则肯定有菱形重复使用 保证每个菱形都有点 或者每个投影都有点
+		//3点的 日字形 2点的 一字型 不能有重复的菱形 BC不能重复的投影 AD必须每个投影都有点
+		if (((YProjectionCount[i].ACount + YProjectionCount[i].DCount + 2) < yPointNum[i])&& 
+			((YProjectionCount[i].BCount + YProjectionCount[i].CCount + 2) == yPointNum[i]))
 		{
-			
+
+			for (j = 0;j < PointNumTmp;j++)
+			{
+				for (k = j+1 ;k < PointNumTmp ;k++)
+				{
+					//删除使用同一个菱形的数据
+					if (DistanceTmp[j].YPos == DistanceTmp[k].YPos)
+					{
+						if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
+						{
+							DeleteAtDistance(DistanceTmp,j,&disNUM);
+						}
+						else
+						{
+							DeleteAtDistance(DistanceTmp,k,&disNUM);
+						}
+						PointNumTmp --;
+						goto RESTART_LESS;
+					}
+
+					//某些情况下，一个投影内只有一个点，必须删除同一个投影中重合的数据
+					if((YPoint[DistanceTmp[j].YPos].Rec != i)||(YPoint[DistanceTmp[k].YPos].Rec != i))	//如果两个点不在一个矩形里面 不具备这个条件
+						continue;
+
+					if ((DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[j].YPos].Rec,YPoint[DistanceTmp[j].YPos].Diamond) &0x0000ffff) == 
+						(DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[k].YPos].Rec,YPoint[DistanceTmp[k].YPos].Diamond) &0x0000ffff))
+					{
+						if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
+						{
+							DeleteAtDistance(DistanceTmp,j,&disNUM);
+						}
+						else
+						{
+							DeleteAtDistance(DistanceTmp,k,&disNUM);
+						}
+						PointNumTmp --;
+						goto RESTART_LESS;
+					}
+					//每个投影都有点 。。。。。
+				}
+			}
+		}
+		//每个投影都有点
+		if (((YProjectionCount[i].ACount + YProjectionCount[i].DCount + 2) < yPointNum[i])&& 
+			((YProjectionCount[i].BCount + YProjectionCount[i].CCount + 2) < yPointNum[i]))
+		{
 		}
 	}
 
-	
+
 	//由于上面的筛选过程有可能把真点筛选出去，所以需要从删除的数据里面找误删的点
 	if (PointNumTmp < PointNum)
 	{
@@ -527,10 +712,10 @@ COPY_POINT:
 				if ((DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[j].YPos].Rec,YPoint[DistanceTmp[j].YPos].Diamond) & 0xffff0000) == 
 					(DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[k].YPos].Rec,YPoint[DistanceTmp[k].YPos].Diamond) & 0xffff0000))
 				{
-						point[j].pt_val.y  = AdjustYRec_Y(&DiamondBuf->strYSquareDiamond[YPoint[DistanceTmp[j].YPos].Rec].strDiamondPoint[YPoint[DistanceTmp[j].YPos].Diamond],
-							XPoint[DistanceTmp[j].XPos].Point.x,YPoint[DistanceTmp[j].YPos].Rec);
-						point[k].pt_val.y  = AdjustYRec_Y(&DiamondBuf->strYSquareDiamond[YPoint[DistanceTmp[k].YPos].Rec].strDiamondPoint[YPoint[DistanceTmp[k].YPos].Diamond],
-							XPoint[DistanceTmp[k].XPos].Point.x,YPoint[DistanceTmp[j].YPos].Rec);
+					point[j].pt_val.y  = AdjustYRec_Y(&DiamondBuf->strYSquareDiamond[YPoint[DistanceTmp[j].YPos].Rec].strDiamondPoint[YPoint[DistanceTmp[j].YPos].Diamond],
+						XPoint[DistanceTmp[j].XPos].Point.x,YPoint[DistanceTmp[j].YPos].Rec);
+					point[k].pt_val.y  = AdjustYRec_Y(&DiamondBuf->strYSquareDiamond[YPoint[DistanceTmp[k].YPos].Rec].strDiamondPoint[YPoint[DistanceTmp[k].YPos].Diamond],
+						XPoint[DistanceTmp[k].XPos].Point.x,YPoint[DistanceTmp[j].YPos].Rec);
 				}
 				if ((DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[j].YPos].Rec,YPoint[DistanceTmp[j].YPos].Diamond) & 0x0000ffff) == 
 					(DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[k].YPos].Rec,YPoint[DistanceTmp[k].YPos].Diamond) & 0x0000ffff))
@@ -544,7 +729,7 @@ COPY_POINT:
 		}
 	}
 #endif
-	 CalcPointID(point,&PointNumTmp );
+	CalcPointID(point,&PointNumTmp );
 	return PointNumTmp;
 }
 
@@ -600,14 +785,14 @@ static int CalcPointID(struct PT_BUF *point,int* num)
 					first = 1;
 					continue;
 				}
-				
+
 				distance_tem = CalclDistance_Short(&point[i].pt_val, &g_PointStatus.LastPoint[j].pt_val);
 				if (min_distance > distance_tem)
 				{
 					min_distance = distance_tem;
 					min_pos = j;
 				}
-				
+
 			}
 			if (min_distance < DISTANCE_THRESHOLD_ID)	//这个点是个老点
 			{
@@ -632,8 +817,8 @@ static int CalcPointID(struct PT_BUF *point,int* num)
 					g_PointStatus.ulLastPointNum++ ;
 					break;
 				}
-				
-				
+
+
 			}
 		}
 		//检测是不是有的点已经多次没有数据 如果没有数据，那就把这个点发送一次抬起事件
@@ -654,7 +839,7 @@ static int CalcPointID(struct PT_BUF *point,int* num)
 			}
 		}
 
-		
+
 	}
 	return 0;
 }

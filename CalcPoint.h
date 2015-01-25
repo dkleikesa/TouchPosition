@@ -7,6 +7,7 @@
 #ifndef  __CC_ARM
 #define __INLINE __inline 
 #endif
+#define PRINTFF printf
 
 #define MAX_POINT	5		//最大支持点数
 #define MAX_POINT_REC 3	//每个矩形里面 支持的最大点数
@@ -20,7 +21,7 @@
 #define TIMES_THRESHOLD_UP		5	//连续检测到TIMES_THRESHOLD_UP 次这个点没数据就认为这个点已经抬起
 
 #define TOTAL_LENGTH	128*SCAN_X_SQUARE_NUM	//白板总宽度
-#define TATAL_HEIGHT	128*SCAN_Y_SQUARE_NUM + 72 //白板总高度
+#define TATAL_HEIGHT	128*(SCAN_Y_SQUARE_NUM-1) + 72 //白板总高度
 
 
 #define NULL 0 
@@ -107,7 +108,7 @@ typedef struct PT_STATUS_S
 
 #define CALCL_AVERAGE_TWO(a,b) ((int)(((int)(a)+(int)(b))/2))
 #define CALCL_DIAMOND_CENTRE_X(a) CALCL_AVERAGE_TWO((a).strPoint0.x,((a)).strPoint3.x)
-#define CALCL_DIAMOND_CENTRE_Y(a) CALCL_AVERAGE_TWO(((a)).strPoint1.y,((a)).strPoint2.y)
+#define CALCL_DIAMOND_CENTRE_Y(a) CALCL_AVERAGE_TWO(((a)).strPoint0.y,((a)).strPoint3.y)
 #define CALCL_REL_TO_ABS(a,b) ((a)+(b)*128)		
 
 
@@ -153,12 +154,12 @@ typedef struct PT_STATUS_S
 	((CALC_DIAMOND*)p)->strPoint3.x))) * (((CALC_DIAMOND*)p)->strPoint0.x - \
 	((CALC_DIAMOND*)p)->strPoint3.x) / (((CALC_DIAMOND*)p)->strPoint0.y - \
 	((CALC_DIAMOND*)p)->strPoint3.y))
-#define ADJUST_YREC_Y(p,x3)  ((((CALC_DIAMOND*)p)->strPoint1.y - \
-	((CALC_DIAMOND*)p)->strPoint2.y) * x3)/(((CALC_DIAMOND*)p)->strPoint1.x -\
-	((CALC_DIAMOND*)p)->strPoint2.x) + (((CALC_DIAMOND*)p)->strPoint1.y - \
-	((((CALC_DIAMOND*)p)->strPoint1.y - ((CALC_DIAMOND*)p)->strPoint2.y) * \
-	((CALC_DIAMOND*)p)->strPoint1.x)/(((CALC_DIAMOND*)p)->strPoint1.x - \
-	((CALC_DIAMOND*)p)->strPoint2.x))
+#define ADJUST_YREC_Y(p,x3)  ((((CALC_DIAMOND*)p)->strPoint0.y - \
+	((CALC_DIAMOND*)p)->strPoint3.y) * x3)/(((CALC_DIAMOND*)p)->strPoint0.x -\
+	((CALC_DIAMOND*)p)->strPoint3.x) + (((CALC_DIAMOND*)p)->strPoint0.y - \
+	((((CALC_DIAMOND*)p)->strPoint0.y - ((CALC_DIAMOND*)p)->strPoint3.y) * \
+	((CALC_DIAMOND*)p)->strPoint0.x)/(((CALC_DIAMOND*)p)->strPoint0.x - \
+	((CALC_DIAMOND*)p)->strPoint3.x))
 #else
 #define ADJUST_XREC_X_REL(p,y0) ((y0 - ((CALC_DIAMOND*)p)->strPoint3.y) * \
 	(((CALC_DIAMOND*)p)->strPoint0.x - ((CALC_DIAMOND*)p)->strPoint3.x) / \
@@ -166,10 +167,10 @@ typedef struct PT_STATUS_S
 	((CALC_DIAMOND*)p)->strPoint3.x)
 //x = (y - y1) * (x2 - x1) / (y2 - y1) + x1
 //y = (x - x1) * (y2 - y1) / (x2 - x1) + y1
-#define ADJUST_YREC_Y_REL(p,x0) ((x0 - ((CALC_DIAMOND*)p)->strPoint1.x) * \
-	(((CALC_DIAMOND*)p)->strPoint2.y - ((CALC_DIAMOND*)p)->strPoint1.y) / \
-	(((CALC_DIAMOND*)p)->strPoint2.x - ((CALC_DIAMOND*)p)->strPoint1.x) + \
-	((CALC_DIAMOND*)p)->strPoint1.y)
+#define ADJUST_YREC_Y_REL(p,x0) ((x0 - ((CALC_DIAMOND*)p)->strPoint0.x) * \
+	(((CALC_DIAMOND*)p)->strPoint3.y - ((CALC_DIAMOND*)p)->strPoint0.y) / \
+	(((CALC_DIAMOND*)p)->strPoint3.x - ((CALC_DIAMOND*)p)->strPoint0.x) + \
+	((CALC_DIAMOND*)p)->strPoint0.y)
 #endif
 
 

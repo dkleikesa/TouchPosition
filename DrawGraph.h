@@ -44,6 +44,7 @@ public:
 	void DrawOnice(POINT* point,Bitmap* bmp,Graphics* graphics);
 	void DrawPoint(POINT* point,Bitmap* bmp,Graphics* graphics,int order);
 	void Draw_DiamondPoint(CALC_DIAMOND_BUF* DiamondBuf, Bitmap* bmp, Graphics* graphics);
+	void InitConsole();
 
 };
 

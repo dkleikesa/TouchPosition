@@ -25,6 +25,8 @@
 #include "TouchPositionDlg.h"
 #include "CalcPoint.h"
 #include "DrawGraph.h"
+#include <io.h>  
+#include <fcntl.h>  
 
 
 DrawGraph::DrawGraph(CTouchPositionDlg *pDlg)
@@ -42,8 +44,18 @@ DrawGraph::DrawGraph(CTouchPositionDlg *pDlg)
 {
 	m_pDlg = pDlg;
 	memset(&g_PointStatus,0,sizeof(PT_STATUS));
+	InitConsole();
 }
-
+void DrawGraph::InitConsole()  
+{  
+	int nRet= 0;  
+	FILE* fp;  
+	AllocConsole();  
+	nRet= _open_osfhandle((long)GetStdHandle(STD_OUTPUT_HANDLE), _O_TEXT);  
+	fp = _fdopen(nRet, "w");  
+	*stdout = *fp;  
+	setvbuf(stdout, NULL, _IONBF, 0);  
+}  
 DrawGraph::~DrawGraph(void)
 {
 }
