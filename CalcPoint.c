@@ -378,7 +378,8 @@ RESTART_LESS:
 		//{
 		//	continue;
 		//}
-		if(xSure == 1)
+		if((xSure == 1)||(xPointNum[i] == 3))
+		//if(xSure == 1)
 		{
 
 			if(((XProjectionCount[i].ACount + XProjectionCount[i].DCount + 2) > xPointNum[i]) ||// AD两个三角形投影个数大于点个数那么 这就是一个错误帧
@@ -566,7 +567,8 @@ RESTART_LESS:
 		//{
 		//	continue;
 		//}
-		if(ySure == 1)
+		if((ySure == 1)||(yPointNum[i] == 3))
+		//if(ySure == 1)
 		{
 
 			if (((YProjectionCount[i].ACount + YProjectionCount[i].DCount + 2) > yPointNum[i])||
