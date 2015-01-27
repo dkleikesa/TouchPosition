@@ -9,11 +9,11 @@ static __INLINE void CalclDiamondCentre(CALC_DIAMOND *a,CALC_POINT *b,int xOry,i
 	if(xOry == 0)
 	{
 		b->x = CALCL_REL_TO_ABS(CALCL_DIAMOND_CENTRE_X(*a),index);
-		b->y = CALCL_DIAMOND_CENTRE_Y(*a),(a->ulDiamondNum);
+		b->y = CALCL_DIAMOND_CENTRE_Y(*a);
 	}
 	else
 	{
-		b->x = CALCL_DIAMOND_CENTRE_X(*a),(a->ulDiamondNum);
+		b->x = CALCL_DIAMOND_CENTRE_X(*a);
 		b->y = CALCL_REL_TO_ABS(CALCL_DIAMOND_CENTRE_Y(*a),index);
 	}
 
@@ -222,17 +222,17 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 		}
 	}
 
-	/*for(i = 0; i<xDiamondNum ;i ++)
+/*	for(i = 0; i<xDiamondNum ;i ++)
 	{
-	point[i].x = XPoint[i].Point.x;
-	point[i].y = XPoint[i].Point.y;
+	point[i].pt_val.x = XPoint[i].Point.x;
+	point[i].pt_val.y = XPoint[i].Point.y;
 
 	}
 	j = 0;
 	for(;i<(yDiamondNum+xDiamondNum);i++)
 	{
-	point[j].x = YPoint[j].Point.x;
-	point[j].y = YPoint[j].Point.y;
+	point[i].pt_val.x = YPoint[j].Point.x;
+	point[i].pt_val.y = YPoint[j].Point.y;
 	j++;
 	}
 	return yDiamondNum+xDiamondNum;*/

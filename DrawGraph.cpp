@@ -967,7 +967,7 @@ void DrawGraph::Draw_DiamondPoint(CALC_DIAMOND_BUF* DiamondBuf, Bitmap* bmp, Gra
 		}
 	}
 SHOW_CALC_POINTTT:
-	struct PT_BUF point[9];
+	struct PT_BUF point[20];
 	int pointnum = CalcPoint(DiamondBuf,point);
 	POINT poi;
 	for(i = 0;i<pointnum ;i ++)
