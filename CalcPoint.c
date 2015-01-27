@@ -254,7 +254,7 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 	memset(yPointNum,0,sizeof(yPointNum));	//y方向菱形计算出来的实际点个数
 	for(i = 0;i < SCAN_X_SQUARE_NUM; i++)
 	{
-#if 0
+#if 1
 		xPointNum[i] = max((XProjectionCount[i].ACount + XProjectionCount[i].DCount + 2),
 			(XProjectionCount[i].BCount + XProjectionCount[i].CCount + 2));
 		xPointNumSum += xPointNum[i];
