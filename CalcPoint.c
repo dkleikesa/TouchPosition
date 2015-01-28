@@ -68,10 +68,10 @@ void PrintDiamond(CALC_DIAMOND_BUF *DiamondBuf,char *OutBuf,int ScanCount)
 		{
 			n += sprintf(OutBuf+n,"%8d%9d   0x%08x (%4d,%4d) (%4d,%4d) (%4d,%4d) (%4d,%4d)\r\n",i,
 				DIAMOND_X_GET_C(DiamondBuf,i),DIAMOND_X_GET_N(DiamondBuf,i,j),
-				CALCL_REL_TO_ABS(DIAMOND_X_GET(DiamondBuf,i,j,0).x,i),DIAMOND_X_GET(DiamondBuf,i,j,0).y,
-				CALCL_REL_TO_ABS(DIAMOND_X_GET(DiamondBuf,i,j,1).x,i),DIAMOND_X_GET(DiamondBuf,i,j,1).y,
-				CALCL_REL_TO_ABS(DIAMOND_X_GET(DiamondBuf,i,j,2).x,i),DIAMOND_X_GET(DiamondBuf,i,j,2).y,
-				CALCL_REL_TO_ABS(DIAMOND_X_GET(DiamondBuf,i,j,3).x,i),DIAMOND_X_GET(DiamondBuf,i,j,3).y);
+				CALCL_REL_TO_ABS(DIAMOND_X_GET_P(DiamondBuf,i,j,0).x,i),DIAMOND_X_GET_P(DiamondBuf,i,j,0).y,
+				CALCL_REL_TO_ABS(DIAMOND_X_GET_P(DiamondBuf,i,j,1).x,i),DIAMOND_X_GET_P(DiamondBuf,i,j,1).y,
+				CALCL_REL_TO_ABS(DIAMOND_X_GET_P(DiamondBuf,i,j,2).x,i),DIAMOND_X_GET_P(DiamondBuf,i,j,2).y,
+				CALCL_REL_TO_ABS(DIAMOND_X_GET_P(DiamondBuf,i,j,3).x,i),DIAMOND_X_GET_P(DiamondBuf,i,j,3).y);
 		}
 	}
 	n += sprintf(OutBuf+n,"------------------------------------------------------------------------------\r\n");
@@ -84,10 +84,10 @@ void PrintDiamond(CALC_DIAMOND_BUF *DiamondBuf,char *OutBuf,int ScanCount)
 		{
 			n += sprintf(OutBuf+n,"%8d%9d   0x%08x (%4d,%4d) (%4d,%4d) (%4d,%4d) (%4d,%4d)\r\n",i,
 				DIAMOND_Y_GET_C(DiamondBuf,i),DIAMOND_Y_GET_N(DiamondBuf,i,j),
-				DIAMOND_Y_GET(DiamondBuf,i,j,0).x,CALCL_REL_TO_ABS(DIAMOND_Y_GET(DiamondBuf,i,j,0).y,i),
-				DIAMOND_Y_GET(DiamondBuf,i,j,1).x,CALCL_REL_TO_ABS(DIAMOND_Y_GET(DiamondBuf,i,j,1).y,i),
-				DIAMOND_Y_GET(DiamondBuf,i,j,2).x,CALCL_REL_TO_ABS(DIAMOND_Y_GET(DiamondBuf,i,j,2).y,i),
-				DIAMOND_Y_GET(DiamondBuf,i,j,3).x,CALCL_REL_TO_ABS(DIAMOND_Y_GET(DiamondBuf,i,j,3).y,i));
+				DIAMOND_Y_GET_P(DiamondBuf,i,j,0).x,CALCL_REL_TO_ABS(DIAMOND_Y_GET_P(DiamondBuf,i,j,0).y,i),
+				DIAMOND_Y_GET_P(DiamondBuf,i,j,1).x,CALCL_REL_TO_ABS(DIAMOND_Y_GET_P(DiamondBuf,i,j,1).y,i),
+				DIAMOND_Y_GET_P(DiamondBuf,i,j,2).x,CALCL_REL_TO_ABS(DIAMOND_Y_GET_P(DiamondBuf,i,j,2).y,i),
+				DIAMOND_Y_GET_P(DiamondBuf,i,j,3).x,CALCL_REL_TO_ABS(DIAMOND_Y_GET_P(DiamondBuf,i,j,3).y,i));
 		}
 	}
 	n += sprintf(OutBuf+n,"------------------------------------------------------------------------------\r\n");
@@ -99,7 +99,7 @@ void PrintDiamond(CALC_DIAMOND_BUF *DiamondBuf,char *OutBuf,int ScanCount)
 //返回值：触摸点的个数
 int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 {
-	unsigned int i,j,k,xDiamondNum,yDiamondNum,disNUM,PointNum;
+	unsigned int i,j,k,xDiamondNum,yDiamondNum,disNUM,disNUM_f,PointNum;
 	int xPointNum[SCAN_X_SQUARE_NUM],xPointNumSum;
 	int yPointNum[SCAN_Y_SQUARE_NUM],yPointNumSum;
 	int PointNumTmp;
@@ -113,6 +113,7 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 	xDiamondNum = 0;	//x方向有效菱形 中心点个数
 	yDiamondNum = 0;	//y方向有效菱形 中心点个数
 	disNUM = 0;	//中心点间距个数
+	disNUM_f = 0;
 	PointNum = 0;	//最终点的个数
 	xPointNumSum = 0;
 	yPointNumSum = 0;
@@ -156,7 +157,33 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 					max(XProjectionCount[i].BCount,(char)(DIAMOND_X_GET_N(DiamondBuf,i,j)));
 				break;
 			}
-
+				
+			if((DIAMOND_X_GET_P(DiamondBuf,i,j,1).y ==0) || (DIAMOND_X_GET_P(DiamondBuf,i,j,1).y ==TATAL_HEIGHT) ||			//三角形
+				(DIAMOND_X_GET_P(DiamondBuf,i,j,2).y ==0)|| (DIAMOND_X_GET_P(DiamondBuf,i,j,2).y ==TATAL_HEIGHT))
+			{
+				if(DIAMOND_X_GET_P(DiamondBuf,i,j,0).x == DIAMOND_X_GET_P(DiamondBuf,i,j,3).x)	//边界三角形
+				{
+					
+					if (DIAMOND_X_GET_P(DiamondBuf,i,j,2).y == DIAMOND_X_GET_P(DiamondBuf,i,j,3).y)
+					{
+						DIAMOND_X_GET_P(DiamondBuf,i,j,2).x = DIAMOND_X_GET_P(DiamondBuf,i,j,0).x;
+						DIAMOND_X_GET_P(DiamondBuf,i,j,2).y = DIAMOND_X_GET_P(DiamondBuf,i,j,1).y;
+					}
+					else if(DIAMOND_X_GET_P(DiamondBuf,i,j,1).y == DIAMOND_X_GET_P(DiamondBuf,i,j,3).y)
+					{
+						DIAMOND_X_GET_P(DiamondBuf,i,j,1).x = DIAMOND_X_GET_P(DiamondBuf,i,j,0).x;
+						DIAMOND_X_GET_P(DiamondBuf,i,j,1).y = DIAMOND_X_GET_P(DiamondBuf,i,j,3).y;
+					}
+				}
+				else	//矩形内的三角形
+				{
+					
+				}
+			}
+			else
+			{
+				//菱形
+			}
 			CalclDiamondCentre(&(DiamondBuf->strXSquareDiamond[i].strDiamondPoint[j]),&XPoint[xDiamondNum].Point,0,i);
 			XPoint[xDiamondNum].Rec = i;
 			XPoint[xDiamondNum].Diamond = j;
@@ -207,6 +234,33 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 				break;
 			}
 
+			if((DIAMOND_Y_GET_P(DiamondBuf,i,j,1).y ==0) || (DIAMOND_Y_GET_P(DiamondBuf,i,j,1).y ==TATAL_HEIGHT) ||			//三角形
+				(DIAMOND_Y_GET_P(DiamondBuf,i,j,2).y ==0)|| (DIAMOND_Y_GET_P(DiamondBuf,i,j,2).y ==TATAL_HEIGHT))
+			{
+				if(DIAMOND_Y_GET_P(DiamondBuf,i,j,0).x == DIAMOND_Y_GET_P(DiamondBuf,i,j,3).x)	//边界三角形
+				{
+
+					if (DIAMOND_Y_GET_P(DiamondBuf,i,j,2).y == DIAMOND_Y_GET_P(DiamondBuf,i,j,3).y)
+					{
+						DIAMOND_Y_GET_P(DiamondBuf,i,j,2).x = DIAMOND_Y_GET_P(DiamondBuf,i,j,0).x;
+						DIAMOND_Y_GET_P(DiamondBuf,i,j,2).y = DIAMOND_Y_GET_P(DiamondBuf,i,j,1).y;
+					}
+					else if(DIAMOND_Y_GET_P(DiamondBuf,i,j,1).y == DIAMOND_Y_GET_P(DiamondBuf,i,j,3).y)
+					{
+						DIAMOND_Y_GET_P(DiamondBuf,i,j,1).x = DIAMOND_Y_GET_P(DiamondBuf,i,j,0).x;
+						DIAMOND_Y_GET_P(DiamondBuf,i,j,1).y = DIAMOND_Y_GET_P(DiamondBuf,i,j,3).y;
+					}
+				}
+				else	//矩形内的三角形
+				{
+
+				}
+			}
+			else
+			{
+				//菱形
+			}
+
 			CalclDiamondCentre(&(DiamondBuf->strYSquareDiamond[i].strDiamondPoint[j]),&YPoint[yDiamondNum].Point,1,i);
 			YPoint[yDiamondNum].Rec = i;
 			YPoint[yDiamondNum].Diamond = j;
@@ -250,6 +304,7 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 	if(disNUM ==0)
 		goto CALC_POINT_END;
 
+	disNUM_f = disNUM;
 	memset(xPointNum,0,sizeof(xPointNum));	//x方向菱形数算出来的实际点个数
 	memset(yPointNum,0,sizeof(yPointNum));	//y方向菱形计算出来的实际点个数
 	for(i = 0;i < SCAN_X_SQUARE_NUM; i++)
@@ -738,10 +793,36 @@ RESTART_LESS:
 	}
 
 
-	//由于上面的筛选过程有可能把真点筛选出去，所以需要从删除的数据里面找误删的点
+	//可能存在边界点，菱形细长，需要特殊处理
 	if (PointNumTmp < PointNum)
 	{
+		for(i = PointNumTmp;i < disNUM_f; i++)
+		{	
+			//PRINTFF("X ratio = %d \r\n",DIAMON_WRH_X(DIAMOND_X_GET_D(DiamondBuf,XPoint[DistanceTmp[i].XPos].Rec,XPoint[DistanceTmp[i].XPos].Diamond)));
+			if(DIAMON_WRH_X(DIAMOND_X_GET_D(DiamondBuf,XPoint[DistanceTmp[i].XPos].Rec,XPoint[DistanceTmp[i].XPos].Diamond))>=DIAMON_RATIO)
+			{
+				//PRINTFF("X new point %d\r\n",(XPoint[DistanceTmp[i].XPos].Point.x - YPoint[DistanceTmp[i].YPos].Point.x));
+				if (abs(XPoint[DistanceTmp[i].XPos].Point.x - YPoint[DistanceTmp[i].YPos].Point.x) <= LONG_DIA_THRESHOLD)
+				{
+					PRINTFF("X new point\r\n");
+				}
+				
+			}
+			//PRINTFF("Y ratio = %d \r\n",DIAMON_WRH_Y(DIAMOND_Y_GET_D(DiamondBuf,YPoint[DistanceTmp[i].YPos].Rec,YPoint[DistanceTmp[i].YPos].Diamond)));
+			if(DIAMON_WRH_Y(DIAMOND_Y_GET_D(DiamondBuf,YPoint[DistanceTmp[i].YPos].Rec,YPoint[DistanceTmp[i].YPos].Diamond))>=DIAMON_RATIO)
+			{
+				//PRINTFF("Y new point %d\r\n",(XPoint[DistanceTmp[i].XPos].Point.y - YPoint[DistanceTmp[i].YPos].Point.y));
+				if (abs(XPoint[DistanceTmp[i].XPos].Point.y - YPoint[DistanceTmp[i].YPos].Point.y) <= LONG_DIA_THRESHOLD)
+				{
+					PRINTFF("Y new point\r\n");
+				}
 
+			}
+			
+
+		}
+
+		
 	}
 	if (PointNumTmp>MAX_POINT)
 	{
@@ -925,13 +1006,16 @@ static int CalcPointID(struct PT_BUF *point,int* num)
 void DeleteAtDistance(CALC_DISTANCE *dis,int pos,int *len)
 {
 	int i;
+	CALC_DISTANCE dis_tmp;
 	if(pos>=(*len))
 		return;
 	(*len) -=1;
+	dis_tmp = dis[pos];
 	for (i=pos; (i <*len)&&(dis[i].distance < DISTANCE_THRESHOLD_WC) ;i++)
 	{
 		dis[i] = dis[i+1];
 	}
+	dis[i] = dis_tmp;
 	*len = i;
 }
 

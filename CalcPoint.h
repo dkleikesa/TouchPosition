@@ -20,8 +20,12 @@
 #define DISTANCE_THRESHOLD_ID		50*50	//两次两个点间距在50以内则认为这两个点ID相同
 #define TIMES_THRESHOLD_UP		3	//连续检测到TIMES_THRESHOLD_UP 次这个点没数据就认为这个点已经抬起
 
-#define TOTAL_LENGTH	128*SCAN_X_SQUARE_NUM	//白板总宽度
-#define TATAL_HEIGHT	128*(SCAN_Y_SQUARE_NUM-1) + 72 //白板总高度
+#define DIAMON_RATIO		30	//菱形的长宽比超过一定程度就说明这是个 细长菱形，需要用特殊方法判定点
+#define LONG_DIA_THRESHOLD  20	//长条菱形，通过一个方向的坐标距离来判定是否相交
+
+#define LENGTH_PRE		128
+#define TOTAL_LENGTH	LENGTH_PRE*SCAN_X_SQUARE_NUM	//白板总宽度
+#define TATAL_HEIGHT	LENGTH_PRE*(SCAN_Y_SQUARE_NUM-1) + 72 //白板总高度
 
 
 #define NULL 0 
@@ -112,18 +116,27 @@ typedef struct PT_STATUS_S
 #define CALCL_REL_TO_ABS(a,b) ((a)+(b)*128)		
 
 
-#define DIAMOND_X_GET(p,a,b,c)  (((CALC_DIAMOND_BUF*)p)->strXSquareDiamond[a].strDiamondPoint[b].strPoint##c)
+#define DIAMOND_X_GET_P(p,a,b,c)  (((CALC_DIAMOND_BUF*)p)->strXSquareDiamond[a].strDiamondPoint[b].strPoint##c)
 #define DIAMOND_X_GET_N(p,a,b)  (((CALC_DIAMOND_BUF*)p)->strXSquareDiamond[a].strDiamondPoint[b].ulDiamondNum)
 #define DIAMOND_X_GET_C(p,a)	(((CALC_DIAMOND_BUF*)p)->strXSquareDiamond[a].ulDiamondCount)
+#define DIAMOND_X_GET_D(p,a,b)  (((CALC_DIAMOND_BUF*)p)->strXSquareDiamond[a].strDiamondPoint[b])
 
-#define DIAMOND_Y_GET(p,a,b,c)  (((CALC_DIAMOND_BUF*)p)->strYSquareDiamond[a].strDiamondPoint[b].strPoint##c)
+#define DIAMOND_Y_GET_P(p,a,b,c)  (((CALC_DIAMOND_BUF*)p)->strYSquareDiamond[a].strDiamondPoint[b].strPoint##c)
 #define DIAMOND_Y_GET_N(p,a,b)  (((CALC_DIAMOND_BUF*)p)->strYSquareDiamond[a].strDiamondPoint[b].ulDiamondNum)
 #define DIAMOND_Y_GET_C(p,a)	(((CALC_DIAMOND_BUF*)p)->strYSquareDiamond[a].ulDiamondCount)
+#define DIAMOND_Y_GET_D(p,a,b)  (((CALC_DIAMOND_BUF*)p)->strYSquareDiamond[a].strDiamondPoint[b])
+
 #define CALCL_SQUAR(a) ((a)*(a)) 
 
 #define min(a,b) ((a) < (b) ? (a) : (b))
 #define max(a,b) ((a) > (b) ? (a) : (b))
 
+#define DIAMON_WRH_X(p) (((p).strPoint2.x - (p).strPoint1.x)==0) ? 0 : \
+						(((p).strPoint0.y - (p).strPoint3.y) / \
+						((p).strPoint2.x - (p).strPoint1.x))
+#define DIAMON_WRH_Y(p) (((p).strPoint2.y - (p).strPoint1.y)==0) ? 0 : \
+						(((p).strPoint0.x - (p).strPoint3.x) / \
+						((p).strPoint2.y - (p).strPoint1.y))
 
 //-------------------------------------------------------------------------------------
 //	|- y0 = k * x0 + b

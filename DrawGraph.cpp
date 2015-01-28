@@ -929,17 +929,17 @@ void DrawGraph::Draw_DiamondPoint(CALC_DIAMOND_BUF* DiamondBuf, Bitmap* bmp, Gra
 		{
 			if(DiamondBuf->strXSquareDiamond[i].strDiamondPoint[j].ulDiamondNum == 0)
 				continue;
-			PointTem.x = CALCL_REL_TO_ABS(DIAMOND_X_GET(DiamondBuf,i,j,0).x,i);
-			PointTem.y = DIAMOND_X_GET(DiamondBuf,i,j,0).y;
+			PointTem.x = CALCL_REL_TO_ABS(DIAMOND_X_GET_P(DiamondBuf,i,j,0).x,i);
+			PointTem.y = DIAMOND_X_GET_P(DiamondBuf,i,j,0).y;
 			DrawPoint(&PointTem , bmp, graphics,0x1e );
-			PointTem.x = CALCL_REL_TO_ABS(DIAMOND_X_GET(DiamondBuf,i,j,1).x,i);
-			PointTem.y = DIAMOND_X_GET(DiamondBuf,i,j,1).y;
+			PointTem.x = CALCL_REL_TO_ABS(DIAMOND_X_GET_P(DiamondBuf,i,j,1).x,i);
+			PointTem.y = DIAMOND_X_GET_P(DiamondBuf,i,j,1).y;
 			DrawPoint(&PointTem , bmp, graphics,0x1e );
-			PointTem.x = CALCL_REL_TO_ABS(DIAMOND_X_GET(DiamondBuf,i,j,2).x,i);
-			PointTem.y = DIAMOND_X_GET(DiamondBuf,i,j,2).y;
+			PointTem.x = CALCL_REL_TO_ABS(DIAMOND_X_GET_P(DiamondBuf,i,j,2).x,i);
+			PointTem.y = DIAMOND_X_GET_P(DiamondBuf,i,j,2).y;
 			DrawPoint(&PointTem , bmp, graphics,0x1e );
-			PointTem.x = CALCL_REL_TO_ABS(DIAMOND_X_GET(DiamondBuf,i,j,3).x,i);
-			PointTem.y = DIAMOND_X_GET(DiamondBuf,i,j,3).y;
+			PointTem.x = CALCL_REL_TO_ABS(DIAMOND_X_GET_P(DiamondBuf,i,j,3).x,i);
+			PointTem.y = DIAMOND_X_GET_P(DiamondBuf,i,j,3).y;
 			DrawPoint(&PointTem , bmp, graphics,0x1e );
 		}
 	}
@@ -952,17 +952,17 @@ void DrawGraph::Draw_DiamondPoint(CALC_DIAMOND_BUF* DiamondBuf, Bitmap* bmp, Gra
 		{
 			if(DiamondBuf->strYSquareDiamond[i].strDiamondPoint[j].ulDiamondNum == 0)
 				continue;
-			PointTem.x = DIAMOND_Y_GET(DiamondBuf,i,j,0).x;
-			PointTem.y =CALCL_REL_TO_ABS(DIAMOND_Y_GET(DiamondBuf,i,j,0).y,i);
+			PointTem.x = DIAMOND_Y_GET_P(DiamondBuf,i,j,0).x;
+			PointTem.y =CALCL_REL_TO_ABS(DIAMOND_Y_GET_P(DiamondBuf,i,j,0).y,i);
 			DrawPoint(&PointTem , bmp, graphics,0x1f );
-			PointTem.x = DIAMOND_Y_GET(DiamondBuf,i,j,1).x;
-			PointTem.y =CALCL_REL_TO_ABS(DIAMOND_Y_GET(DiamondBuf,i,j,1).y,i);
+			PointTem.x = DIAMOND_Y_GET_P(DiamondBuf,i,j,1).x;
+			PointTem.y =CALCL_REL_TO_ABS(DIAMOND_Y_GET_P(DiamondBuf,i,j,1).y,i);
 			DrawPoint(&PointTem , bmp, graphics,0x1f );
-			PointTem.x = DIAMOND_Y_GET(DiamondBuf,i,j,2).x;
-			PointTem.y =CALCL_REL_TO_ABS(DIAMOND_Y_GET(DiamondBuf,i,j,2).y,i);
+			PointTem.x = DIAMOND_Y_GET_P(DiamondBuf,i,j,2).x;
+			PointTem.y =CALCL_REL_TO_ABS(DIAMOND_Y_GET_P(DiamondBuf,i,j,2).y,i);
 			DrawPoint(&PointTem , bmp, graphics,0x1f);
-			PointTem.x = DIAMOND_Y_GET(DiamondBuf,i,j,3).x;
-			PointTem.y =CALCL_REL_TO_ABS(DIAMOND_Y_GET(DiamondBuf,i,j,3).y,i);
+			PointTem.x = DIAMOND_Y_GET_P(DiamondBuf,i,j,3).x;
+			PointTem.y =CALCL_REL_TO_ABS(DIAMOND_Y_GET_P(DiamondBuf,i,j,3).y,i);
 			DrawPoint(&PointTem , bmp, graphics,0x1f );
 		}
 	}
