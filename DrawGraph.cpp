@@ -43,7 +43,6 @@ DrawGraph::DrawGraph(CTouchPositionDlg *pDlg)
 	, m_BrushBlack(Color(255, 0,0,0)) 
 {
 	m_pDlg = pDlg;
-	memset(&g_PointStatus,0,sizeof(PT_STATUS));
 	InitConsole();
 }
 void DrawGraph::InitConsole()  
@@ -58,8 +57,13 @@ void DrawGraph::InitConsole()
 }  
 DrawGraph::~DrawGraph(void)
 {
+
 }
 
+void DrawGraph::ClearPointIDBuf(void)
+{
+	memset(&g_PointStatus,0,sizeof(PT_STATUS));
+}
 void DrawGraph::DrawTrack_Onice(void)
 {
 

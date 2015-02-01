@@ -821,6 +821,7 @@ RESTART_LESS:
 				}
 			}
 		}
+
 #if 1
 RESTART_MORE:
 		for(i = 0;i < SCAN_X_SQUARE_NUM; i++)  
