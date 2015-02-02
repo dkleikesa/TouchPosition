@@ -84,3 +84,4 @@ TouchPosition.manifest
 7.点ID判定 每个点只能有一个点与之对应 这个不能做
 8.边界时候菱形划归到一个矩形里面，会出现有投影但是没有菱形的情况，造成点个数误判
 
+YProjectionCount[i].pos[0]

@@ -86,6 +86,10 @@ typedef struct CACL_PROJECTION_COUNT_S
 	char BCount;
 	char CCount;
 	char DCount;
+	char APos[3];	//0、1、2、3表示三角形A、D、C、B
+	char BPos[3];	//0、1、2、3表示三角形A、D、C、B
+	char CPos[3];	//0、1、2、3表示三角形A、D、C、B
+	char DPos[3];	//0、1、2、3表示三角形A、D、C、B
 }CACL_PROJECTION_COUNT;
 
 typedef struct POINT_C_S
@@ -186,7 +190,16 @@ typedef struct PT_STATUS_S
 	((CALC_DIAMOND*)p)->strPoint0.y)
 #endif
 
-
+#define ADD_LOST_POINT_X	\
+for(j=PointNumTmp;j< PointNumTmp_t;j++)	\
+{	\
+	if(DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[j].XPos].Rec,XPoint[DistanceTmp[j].XPos].Diamond)==DiamondNumTmp)	\
+	{	\
+		ExcDistance(DistanceTmp,PointNumTmp,j);	\
+		PointNumTmp++;	\
+		PRINTFF("X add lost point %08x no point\r\n",j,k,DiamondNumTmp);	\
+	}	\
+}
 
 void PrintDiamond(CALC_DIAMOND_BUF *DiamondBuf,char *OutBuf,int ScanCount);
 int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point);
