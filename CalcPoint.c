@@ -138,6 +138,8 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 	int PosTem;
 	int xSure, ySure;
 	int DiamondNumTmp;
+	int tmp;
+	char xNeedSub[SCAN_X_SQUARE_NUM],yNeedSub[SCAN_Y_SQUARE_NUM];
 	CACL_DIAMOND_CENTER XPoint[MAX_POINT_REC*MAX_POINT_REC*SCAN_X_SQUARE_NUM];	//x方向菱形 中心点buff
 	CACL_DIAMOND_CENTER YPoint[MAX_POINT_REC*MAX_POINT_REC*SCAN_Y_SQUARE_NUM]; //y方向菱形 中心点buff
 	CALC_DISTANCE DistanceTmp[MAX_POINT_REC*MAX_POINT_REC*SCAN_X_SQUARE_NUM*MAX_POINT_REC*MAX_POINT_REC*SCAN_Y_SQUARE_NUM];	//中心点间距buff
@@ -157,7 +159,8 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 	PointNumTmp = 0; //根据中心点距离计算出来的触摸点个数， 可能存在假点或者少点
 	memset(XProjectionCount,0xff,sizeof(XProjectionCount));	//x方向菱形数算出来的实际点个数
 	memset(YProjectionCount,0xff,sizeof(YProjectionCount));	//y方向菱形计算出来的实际点个数
-
+	memset(xNeedSub,0,sizeof(xNeedSub));
+	memset(yNeedSub,0,sizeof(yNeedSub));
 	//计算出所有X方向菱形中心点
 	for(i = 0;i < SCAN_X_SQUARE_NUM; i++)
 	{	
@@ -219,6 +222,12 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 			{
 				//菱形
 			}
+			tmp = LENGTH_PRE;
+			if ((DIAMOND_X_GET_P(DiamondBuf,i,j,2).x > tmp)||((DIAMOND_X_GET_P(DiamondBuf,i,j,0).x==tmp)&&(DIAMOND_X_GET_P(DiamondBuf,i,j,3).x==tmp)))
+			{
+				xNeedSub[i]++;
+			}
+
 			CalclDiamondCentre(&(DiamondBuf->strXSquareDiamond[i].strDiamondPoint[j]),&XPoint[xDiamondNum].Point,0,i);
 			XPoint[xDiamondNum].Rec = i;
 			XPoint[xDiamondNum].Diamond = j;
@@ -295,7 +304,11 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 			{
 				//菱形
 			}
-
+			tmp = LENGTH_PRE;
+			if ((DIAMOND_Y_GET_P(DiamondBuf,i,j,2).y > tmp)||((DIAMOND_Y_GET_P(DiamondBuf,i,j,0).y==tmp)&&(DIAMOND_Y_GET_P(DiamondBuf,i,j,3).y==tmp)))
+			{
+				yNeedSub[i]++;
+			}
 			CalclDiamondCentre(&(DiamondBuf->strYSquareDiamond[i].strDiamondPoint[j]),&YPoint[yDiamondNum].Point,1,i);
 			YPoint[yDiamondNum].Rec = i;
 			YPoint[yDiamondNum].Diamond = j;
@@ -347,6 +360,16 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 #if 1
 		xPointNum[i] = max((XProjectionCount[i].ACount + XProjectionCount[i].DCount + 2),
 			(XProjectionCount[i].BCount + XProjectionCount[i].CCount + 2));
+		if (i>1)
+		{
+			if (xNeedSub[i-1]>0)
+			{
+				if ( xPointNum[i]>0)
+				{
+					 xPointNum[i]--;
+				}
+			}
+		}
 		xPointNumSum += xPointNum[i];
 		for (j=0;j<3;j++)
 		{
@@ -381,6 +404,17 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 #if 1
 		yPointNum[i] =  max((YProjectionCount[i].ACount + YProjectionCount[i].DCount + 2),
 			(YProjectionCount[i].BCount + YProjectionCount[i].CCount + 2));
+
+		if (i>1)
+		{
+			if (yNeedSub[i-1]>0)
+			{
+				if ( yPointNum[i]>0)
+				{
+					yPointNum[i]--;
+				}
+			}
+		}
 		yPointNumSum += yPointNum[i];
 		for (j=0;j<3;j++)
 		{
@@ -1224,8 +1258,8 @@ RESTART_MORE:
 		}
 
 		//如果还少。。。
-		if (PointNumTmp < PointNum)
-	//	if (PointNumTmp < 0)
+	//	if (PointNumTmp < PointNum)
+		if (PointNumTmp < 0)
 		{
 			for (j = 0;j < PointNumTmp;j++)
 			{

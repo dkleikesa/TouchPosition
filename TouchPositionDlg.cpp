@@ -222,9 +222,9 @@ void CTouchPositionDlg::OnBnClickedButtonOpen()
 			this->SetWindowTextA(fToFile.GetFilePath());
 
 			fToFile.Close();
-
-			SetList();
 			m_DrawGraph.ClearPointIDBuf();
+			SetList();
+			
 			//	str.Format("打开文件成功！长度=%d",m_nFileLength);
 			//	this->GetDlgItem(IDC_STATIC_STATUS)->SetWindowTextA(str);
 
