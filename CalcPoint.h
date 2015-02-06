@@ -115,8 +115,11 @@ typedef struct PT_STATUS_S
 
 
 #define CALCL_AVERAGE_TWO(a,b) ((int)(((int)(a)+(int)(b))/2))
-#define CALCL_DIAMOND_CENTRE_X(a) CALCL_AVERAGE_TWO((a).strPoint0.x,((a)).strPoint3.x)
-#define CALCL_DIAMOND_CENTRE_Y(a) CALCL_AVERAGE_TWO(((a)).strPoint1.y,((a)).strPoint2.y)
+#define CALCL_X_DIAMOND_CENTRE_X(a) CALCL_AVERAGE_TWO((a).strPoint0.x,((a)).strPoint3.x)
+#define CALCL_X_DIAMOND_CENTRE_Y(a) CALCL_AVERAGE_TWO(((a)).strPoint1.y,((a)).strPoint2.y)
+#define CALCL_Y_DIAMOND_CENTRE_X(a) CALCL_AVERAGE_TWO((a).strPoint1.x,((a)).strPoint2.x)
+#define CALCL_Y_DIAMOND_CENTRE_Y(a) CALCL_AVERAGE_TWO(((a)).strPoint0.y,((a)).strPoint3.y)
+
 #define CALCL_REL_TO_ABS(a,b) ((a)+(b)*128)		
 
 

@@ -40,6 +40,7 @@ DrawGraph::DrawGraph(CTouchPositionDlg *pDlg)
 	, m_BrushOrange(Color(255, 255,128,122))
 	, m_BrushYellow(Color(255, 255,255,0))
 	, m_BrushGray(Color(255, 0,162,232)) 
+	, m_BrushRR(Color(255, 150,162,0)) 
 	, m_BrushBlack(Color(255, 0,0,0)) 
 {
 	m_pDlg = pDlg;
@@ -1055,6 +1056,7 @@ void DrawGraph::DrawPoint(POINT* point,Bitmap* bmp,Graphics* graphics,int order 
 	case 0x0: brush = &m_BrushRed; break;
 	case 0x1: brush = &m_BrushGreen; break;
 	case 0x2: brush = &m_BrushOrange; break;
+	case 0x3: brush = &m_BrushRR; break;
 	case 0xe: brush = &m_BrushYellow; break;	//
 	case 0xf: brush = &m_BrushGray; break;	//
 	default: brush = &m_BrushBlack; break;

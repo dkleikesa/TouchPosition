@@ -31,6 +31,7 @@ public:
 	SolidBrush m_BrushBlack;	//ª≠µ„”√
 	SolidBrush m_BrushYellow;	
 	SolidBrush m_BrushGray;	
+	SolidBrush m_BrushRR;
 
 
 public:

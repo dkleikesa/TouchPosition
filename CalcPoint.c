@@ -8,13 +8,13 @@ static __INLINE void CalclDiamondCentre(CALC_DIAMOND *a,CALC_POINT *b,int xOry,i
 {
 	if(xOry == 0)
 	{
-		b->x = CALCL_REL_TO_ABS(CALCL_DIAMOND_CENTRE_X(*a),index);
-		b->y = CALCL_DIAMOND_CENTRE_Y(*a);
+		b->x = CALCL_REL_TO_ABS(CALCL_X_DIAMOND_CENTRE_X(*a),index);
+		b->y = CALCL_X_DIAMOND_CENTRE_Y(*a);
 	}
 	else
 	{
-		b->x = CALCL_DIAMOND_CENTRE_X(*a);
-		b->y = CALCL_REL_TO_ABS(CALCL_DIAMOND_CENTRE_Y(*a),index);
+		b->x = CALCL_Y_DIAMOND_CENTRE_X(*a);
+		b->y = CALCL_REL_TO_ABS(CALCL_Y_DIAMOND_CENTRE_Y(*a),index);
 	}
 
 }
@@ -35,17 +35,34 @@ static __INLINE int  AdjustXRec_X (CALC_DIAMOND* p,int y0,char rec)
 {
 	if ((((CALC_DIAMOND*)p)->strPoint0.y - ((CALC_DIAMOND*)p)->strPoint3.y) == 0)
 	{
-		return CALCL_REL_TO_ABS(CALCL_DIAMOND_CENTRE_X(*p),rec);
+		return CALCL_REL_TO_ABS(CALCL_X_DIAMOND_CENTRE_X(*p),rec);
 	}
 	return CALCL_REL_TO_ABS(ADJUST_XREC_X_REL(p,y0),rec);
 }
+static __INLINE int  AdjustXRec_X_L (CALC_DIAMOND* p,int y0)
+{
+	if ((((CALC_DIAMOND*)p)->strPoint0.y - ((CALC_DIAMOND*)p)->strPoint3.y) == 0)
+	{
+		return CALCL_X_DIAMOND_CENTRE_X(*p);
+	}
+	return ADJUST_XREC_X_REL(p,y0);
+}
+
 static __INLINE int  AdjustYRec_Y(CALC_DIAMOND* p,int x0,char rec) 
 {
-	if ((((CALC_DIAMOND*)p)->strPoint2.x - ((CALC_DIAMOND*)p)->strPoint1.x) == 0)
+	if ((((CALC_DIAMOND*)p)->strPoint3.x - ((CALC_DIAMOND*)p)->strPoint0.x) == 0)
 	{
-		return  CALCL_REL_TO_ABS(CALCL_DIAMOND_CENTRE_Y(*p),rec);
+		return  CALCL_REL_TO_ABS(CALCL_Y_DIAMOND_CENTRE_Y(*p),rec);
 	}
 	return CALCL_REL_TO_ABS(ADJUST_YREC_Y_REL(p,x0),rec);
+}
+static __INLINE int  AdjustYRec_Y_L(CALC_DIAMOND* p,int x0 ) 
+{
+	if ((((CALC_DIAMOND*)p)->strPoint3.x - ((CALC_DIAMOND*)p)->strPoint0.x) == 0)
+	{
+		return  CALCL_Y_DIAMOND_CENTRE_Y(*p);
+	}
+	return ADJUST_YREC_Y_REL(p,x0);
 }
 
 static __INLINE void GetNumOne(char* dis,int k)  
@@ -210,17 +227,32 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 					else if(DIAMOND_X_GET_P(DiamondBuf,i,j,1).y == DIAMOND_X_GET_P(DiamondBuf,i,j,3).y)
 					{
 						DIAMOND_X_GET_P(DiamondBuf,i,j,1).x = DIAMOND_X_GET_P(DiamondBuf,i,j,0).x;
-						DIAMOND_X_GET_P(DiamondBuf,i,j,1).y = DIAMOND_X_GET_P(DiamondBuf,i,j,3).y;
+						DIAMOND_X_GET_P(DiamondBuf,i,j,1).y = DIAMOND_X_GET_P(DiamondBuf,i,j,2).y;
 					}
+					CalclDiamondCentre(&(DiamondBuf->strXSquareDiamond[i].strDiamondPoint[j]),&XPoint[xDiamondNum].Point,0,i);
 				}
 				else	//矩形内的三角形
 				{
-					
+					if ((DIAMOND_X_GET_P(DiamondBuf,i,j,1).y ==0)||(DIAMOND_X_GET_P(DiamondBuf,i,j,1).y ==TATAL_HEIGHT))
+					{
+						XPoint[xDiamondNum].Point.y = DIAMOND_X_GET_P(DiamondBuf,i,j,2).y;
+						XPoint[xDiamondNum].Point.x = CALCL_AVERAGE_TWO( DIAMOND_X_GET_P(DiamondBuf,i,j,2).x,
+							AdjustXRec_X_L(&DIAMOND_X_GET_D(DiamondBuf,i,j), DIAMOND_X_GET_P(DiamondBuf,i,j,2).y));
+					}
+					if ((DIAMOND_X_GET_P(DiamondBuf,i,j,2).y ==0)|| (DIAMOND_X_GET_P(DiamondBuf,i,j,2).y ==TATAL_HEIGHT))
+					{
+						XPoint[xDiamondNum].Point.y = DIAMOND_X_GET_P(DiamondBuf,i,j,1).y;
+						XPoint[xDiamondNum].Point.x  = CALCL_AVERAGE_TWO(DIAMOND_X_GET_P(DiamondBuf,i,j,1).x , 
+							AdjustXRec_X_L(&DIAMOND_X_GET_D(DiamondBuf,i,j), DIAMOND_X_GET_P(DiamondBuf,i,j,1).y));
+					}
+
+					XPoint[xDiamondNum].Point.x = CALCL_REL_TO_ABS(XPoint[xDiamondNum].Point.x,i);
 				}
 			}
 			else
 			{
 				//菱形
+				CalclDiamondCentre(&(DiamondBuf->strXSquareDiamond[i].strDiamondPoint[j]),&XPoint[xDiamondNum].Point,0,i);
 			}
 			tmp = LENGTH_PRE;
 			if ((DIAMOND_X_GET_P(DiamondBuf,i,j,2).x > tmp)||((DIAMOND_X_GET_P(DiamondBuf,i,j,0).x==tmp)&&(DIAMOND_X_GET_P(DiamondBuf,i,j,3).x==tmp)))
@@ -228,7 +260,7 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 				xNeedSub[i]++;
 			}
 
-			CalclDiamondCentre(&(DiamondBuf->strXSquareDiamond[i].strDiamondPoint[j]),&XPoint[xDiamondNum].Point,0,i);
+			
 			XPoint[xDiamondNum].Rec = i;
 			XPoint[xDiamondNum].Diamond = j;
 			if (XPoint[xDiamondNum].Point.x > TOTAL_LENGTH|| XPoint[xDiamondNum].Point.y>TATAL_HEIGHT)
@@ -278,38 +310,52 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 				break;
 			}
 
-			if((DIAMOND_Y_GET_P(DiamondBuf,i,j,1).y ==0) || (DIAMOND_Y_GET_P(DiamondBuf,i,j,1).y ==TATAL_HEIGHT) ||			//三角形
-				(DIAMOND_Y_GET_P(DiamondBuf,i,j,2).y ==0)|| (DIAMOND_Y_GET_P(DiamondBuf,i,j,2).y ==TATAL_HEIGHT))
+			if((DIAMOND_Y_GET_P(DiamondBuf,i,j,1).x ==0) || (DIAMOND_Y_GET_P(DiamondBuf,i,j,1).x ==TOTAL_LENGTH) ||			//三角形
+				(DIAMOND_Y_GET_P(DiamondBuf,i,j,2).x ==0)|| (DIAMOND_Y_GET_P(DiamondBuf,i,j,2).x ==TOTAL_LENGTH))
 			{
-				if(DIAMOND_Y_GET_P(DiamondBuf,i,j,0).x == DIAMOND_Y_GET_P(DiamondBuf,i,j,3).x)	//边界三角形
+				if(DIAMOND_Y_GET_P(DiamondBuf,i,j,0).y == DIAMOND_Y_GET_P(DiamondBuf,i,j,3).y)	//边界三角形
 				{
 
 					if (DIAMOND_Y_GET_P(DiamondBuf,i,j,2).y == DIAMOND_Y_GET_P(DiamondBuf,i,j,3).y)
 					{
-						DIAMOND_Y_GET_P(DiamondBuf,i,j,2).x = DIAMOND_Y_GET_P(DiamondBuf,i,j,0).x;
-						DIAMOND_Y_GET_P(DiamondBuf,i,j,2).y = DIAMOND_Y_GET_P(DiamondBuf,i,j,1).y;
+						DIAMOND_Y_GET_P(DiamondBuf,i,j,2).y = DIAMOND_Y_GET_P(DiamondBuf,i,j,0).y;
+						DIAMOND_Y_GET_P(DiamondBuf,i,j,2).x = DIAMOND_Y_GET_P(DiamondBuf,i,j,1).x;
 					}
 					else if(DIAMOND_Y_GET_P(DiamondBuf,i,j,1).y == DIAMOND_Y_GET_P(DiamondBuf,i,j,3).y)
 					{
-						DIAMOND_Y_GET_P(DiamondBuf,i,j,1).x = DIAMOND_Y_GET_P(DiamondBuf,i,j,0).x;
-						DIAMOND_Y_GET_P(DiamondBuf,i,j,1).y = DIAMOND_Y_GET_P(DiamondBuf,i,j,3).y;
+						DIAMOND_Y_GET_P(DiamondBuf,i,j,1).y = DIAMOND_Y_GET_P(DiamondBuf,i,j,0).y;
+						DIAMOND_Y_GET_P(DiamondBuf,i,j,1).x = DIAMOND_Y_GET_P(DiamondBuf,i,j,1).y;
 					}
+					CalclDiamondCentre(&(DiamondBuf->strYSquareDiamond[i].strDiamondPoint[j]),&YPoint[yDiamondNum].Point,1,i);
 				}
 				else	//矩形内的三角形
 				{
-
+					if ((DIAMOND_Y_GET_P(DiamondBuf,i,j,1).x ==0)||(DIAMOND_Y_GET_P(DiamondBuf,i,j,1).x ==TOTAL_LENGTH))
+					{
+						YPoint[yDiamondNum].Point.x = DIAMOND_Y_GET_P(DiamondBuf,i,j,2).x;
+						YPoint[yDiamondNum].Point.y = CALCL_AVERAGE_TWO(DIAMOND_Y_GET_P(DiamondBuf,i,j,2).y ,
+							 AdjustYRec_Y_L(&DIAMOND_Y_GET_D(DiamondBuf,i,j), DIAMOND_Y_GET_P(DiamondBuf,i,j,2).x));
+					}
+					if ((DIAMOND_Y_GET_P(DiamondBuf,i,j,2).x ==0)|| (DIAMOND_Y_GET_P(DiamondBuf,i,j,2).x ==TOTAL_LENGTH))
+					{
+						YPoint[yDiamondNum].Point.x = DIAMOND_Y_GET_P(DiamondBuf,i,j,1).x;
+						YPoint[yDiamondNum].Point.y = CALCL_AVERAGE_TWO(DIAMOND_Y_GET_P(DiamondBuf,i,j,1).y,
+							AdjustYRec_Y_L(&DIAMOND_Y_GET_D(DiamondBuf,i,j), DIAMOND_Y_GET_P(DiamondBuf,i,j,1).x));
+					}
+					YPoint[yDiamondNum].Point.y = CALCL_REL_TO_ABS(YPoint[yDiamondNum].Point.y,i);
 				}
 			}
 			else
 			{
 				//菱形
+				CalclDiamondCentre(&(DiamondBuf->strYSquareDiamond[i].strDiamondPoint[j]),&YPoint[yDiamondNum].Point,1,i);
 			}
 			tmp = LENGTH_PRE;
 			if ((DIAMOND_Y_GET_P(DiamondBuf,i,j,2).y > tmp)||((DIAMOND_Y_GET_P(DiamondBuf,i,j,0).y==tmp)&&(DIAMOND_Y_GET_P(DiamondBuf,i,j,3).y==tmp)))
 			{
 				yNeedSub[i]++;
 			}
-			CalclDiamondCentre(&(DiamondBuf->strYSquareDiamond[i].strDiamondPoint[j]),&YPoint[yDiamondNum].Point,1,i);
+			
 			YPoint[yDiamondNum].Rec = i;
 			YPoint[yDiamondNum].Diamond = j;
 			if (YPoint[yDiamondNum].Point.x > TOTAL_LENGTH|| YPoint[yDiamondNum].Point.y>TATAL_HEIGHT)
@@ -357,7 +403,6 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 	memset(yPointNum,0,sizeof(yPointNum));	//y方向菱形计算出来的实际点个数
 	for(i = 0;i < SCAN_X_SQUARE_NUM; i++)
 	{
-#if 1
 		xPointNum[i] = max((XProjectionCount[i].ACount + XProjectionCount[i].DCount + 2),
 			(XProjectionCount[i].BCount + XProjectionCount[i].CCount + 2));
 		if (i>1)
@@ -382,26 +427,9 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 		GetNumOne(XProjectionCount[i].DPos,XProjectionCount[i].DCount+1);
 		GetNumOne(XProjectionCount[i].CPos,XProjectionCount[i].CCount+1);
 		GetNumOne(XProjectionCount[i].BPos,XProjectionCount[i].BCount+1);
-		
-
-#else
-		if(DIAMOND_X_GET_C(DiamondBuf,i) ==0)
-			continue;
-		for (k=1;k<=MAX_POINT_REC;k++)
-		{
-			if (DIAMOND_X_GET_C(DiamondBuf,i) <= (k*k))
-			{
-				xPointNum[i] = k;
-				xPointNumSum += k;
-				break;
-			}
-		}
-#endif
-
 	}
 	for(i = 0;i < SCAN_Y_SQUARE_NUM; i++)
 	{
-#if 1
 		yPointNum[i] =  max((YProjectionCount[i].ACount + YProjectionCount[i].DCount + 2),
 			(YProjectionCount[i].BCount + YProjectionCount[i].CCount + 2));
 
@@ -428,19 +456,6 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 		GetNumOne(YProjectionCount[i].DPos,YProjectionCount[i].DCount+1);
 		GetNumOne(YProjectionCount[i].CPos,YProjectionCount[i].CCount+1);
 		GetNumOne(YProjectionCount[i].BPos,YProjectionCount[i].BCount+1);
-#else
-		if(DIAMOND_Y_GET_C(DiamondBuf,i) ==0)
-			continue;
-		for (k=1;k<=MAX_POINT_REC;k++)
-		{
-			if (DIAMOND_Y_GET_C(DiamondBuf,i) <= (k*k))
-			{
-				yPointNum[i] = k;
-				yPointNumSum += k;
-				break;
-			}
-		}
-#endif
 	}
 
 	PointNum = ((xPointNumSum>yPointNumSum) ? xPointNumSum : yPointNumSum);	//最终是实际点数应该是两者中的 较大值
@@ -916,7 +931,7 @@ RESTART_LESS:
 			}
 		}
 		PointNumTmp_t = PointNumTmp;
-#if 1
+//#if 1
 RESTART_MORE:
 		for(i = 0;i < SCAN_X_SQUARE_NUM; i++)  
 		{
@@ -1090,6 +1105,7 @@ RESTART_MORE:
 				}
 			}
 		}
+#if 1
 		for(i = 0;i < SCAN_Y_SQUARE_NUM; i++) 
 		{
 			if(yPointNum[i] ==0)
