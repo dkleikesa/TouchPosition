@@ -4,10 +4,13 @@
 
 #include <math.h>
 
-#ifndef  __CC_ARM
 #define __INLINE __inline 
-#endif
+
+#ifndef  __CC_ARM
 #define PRINTFF printf
+#else
+#define PRINTFF
+#endif
 
 #define MAX_POINT	5		//最大支持点数
 #define MAX_POINT_REC 3	//每个矩形里面 支持的最大点数
@@ -30,14 +33,15 @@
 
 #define NULL 0 
 
+#ifndef  __CC_ARM
+
 #pragma pack(push)
 #pragma pack(1)
-
 //点坐标结构
 typedef struct CALC_POINT_S
 {
-    int  x;    /*X坐标*/
-	int y;    /*Y坐标*/
+   unsigned int  x;    /*X坐标*/
+	unsigned int y;    /*Y坐标*/
 }CALC_POINT;
 
 //菱形坐标结构
@@ -57,6 +61,7 @@ typedef struct CALC_DIAMOND_INTERFACE_S
     CALC_DIAMOND strDiamondPoint[9];	/*菱形坐标数组*/
 }CALC_DIAMOND_INTERFACE;
 
+#endif
 //一次扫描的所有数据
 typedef struct CALC_DIAMOND_BUF_S
 {
@@ -68,35 +73,37 @@ typedef struct CALC_DIAMOND_BUF_S
 //计算中心间距的结构体
 typedef struct CALC_DISTANCE_S
 {
-	int distance;
-	char XPos;
-	char YPos;
+	signed int distance;
+	unsigned char XPos;
+	unsigned char YPos;
 }CALC_DISTANCE;
 
 typedef struct CACL_DIAMOND_CENTER_S
 {
 	CALC_POINT Point;
-	char Rec;
-	char Diamond;
+	signed char Rec;
+	signed char Diamond;
 }CACL_DIAMOND_CENTER;
 
 typedef struct CACL_PROJECTION_COUNT_S
 {
-	char ACount;
-	char BCount;
-	char CCount;
-	char DCount;
-	char APos[3];	//0、1、2、3表示三角形A、D、C、B
-	char BPos[3];	//0、1、2、3表示三角形A、D、C、B
-	char CPos[3];	//0、1、2、3表示三角形A、D、C、B
-	char DPos[3];	//0、1、2、3表示三角形A、D、C、B
+	signed char ACount;
+	signed char BCount;
+	signed char CCount;
+	signed char DCount;
+	signed char APos[3];	//0、1、2、3表示三角形A、D、C、B
+	signed char BPos[3];	//0、1、2、3表示三角形A、D、C、B
+	signed char CPos[3];	//0、1、2、3表示三角形A、D、C、B
+	signed char DPos[3];	//0、1、2、3表示三角形A、D、C、B
 }CACL_PROJECTION_COUNT;
 
+#ifndef  __CC_ARM
 typedef struct POINT_C_S
 {
 	unsigned short x;
 	unsigned short y;
 }POINT_C;
+
 struct PT_BUF
 {
 	unsigned short valid;
@@ -104,15 +111,18 @@ struct PT_BUF
 	unsigned short tip;	 // tip for down and up events  2013.09.07
 	POINT_C pt_val;
 };
+#endif
 
-typedef struct PT_STATUS_S
+typedef struct PT_STATUS_L_S
 {
 	unsigned int ulLastPointNum;              /*实点状态0、1、2、3。。。*/
 	struct PT_BUF LastPoint[MAX_POINT];   /*上次的实点信息*/
 	char LastPointUpTime[MAX_POINT];	/*此点已经多少次没有扫描到信息*/
-}PT_STATUS;
-#pragma pack(pop)
+}PT_STATUS_L;
 
+#ifndef  __CC_ARM
+#pragma pack(pop)
+#endif
 
 #define CALCL_AVERAGE_TWO(a,b) ((int)(((int)(a)+(int)(b))/2))
 #define CALCL_X_DIAMOND_CENTRE_X(a) CALCL_AVERAGE_TWO((a).strPoint0.x,((a)).strPoint3.x)
@@ -209,11 +219,11 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point);
 int GetMin(int* buf,int len,int *CurPos);
 void InsertSort(CALC_DISTANCE *a, int n);
 void shell_sort(CALC_DISTANCE *arr, int len) ;
-void DeleteAtDistance(CALC_DISTANCE *dis,int pos,int len);
+void DeleteAtDistance(CALC_DISTANCE *dis,int pos,unsigned int *len);
 static int CalcPointID(struct PT_BUF *point,int *num);
 void ExcDistance(CALC_DISTANCE *dis,int src,int dst);
 void ForceDeleteAtDistance(CALC_DISTANCE *dis,int pos,int *len);
-
-extern PT_STATUS g_PointStatus;	
+void ClearPointID(void);
+extern PT_STATUS_L g_PointStatus;	
 
 #endif

@@ -1,7 +1,15 @@
+#ifdef  __CC_ARM
+#include "whiteboard.h"
+#endif
+
 #include "CalcPoint.h"
 
-PT_STATUS g_PointStatus;	//扫描点ID的状态
+PT_STATUS_L g_PointStatus;	//扫描点ID的状态
 
+void ClearPointID(void)
+{
+	memset(&g_PointStatus,0,sizeof(PT_STATUS_L));
+}
 
 //获取菱形中心点
 static __INLINE void CalclDiamondCentre(CALC_DIAMOND *a,CALC_POINT *b,int xOry,int index)
@@ -25,8 +33,11 @@ static __INLINE int CalclDistance(CALC_POINT *a,CALC_POINT *b)
 {
 	return CALCL_SQUAR((a->x) - (b->x)) + CALCL_SQUAR((a->y)-(b->y));
 }
-
+#ifndef  __CC_ARM
 static __INLINE int CalclDistance_Short(POINT_C *a,POINT_C *b)
+#else
+static __INLINE int CalclDistance_Short(struct POINT *a,struct POINT *b)
+#endif
 {
 	return CALCL_SQUAR((a->x) - (b->x)) + CALCL_SQUAR((a->y)-(b->y));
 }
@@ -104,7 +115,7 @@ static __INLINE void ClearPos(CACL_PROJECTION_COUNT* dis,int k)
 //ScanCount: 当前数据编号
 void PrintDiamond(CALC_DIAMOND_BUF *DiamondBuf,char *OutBuf,int ScanCount)
 {
-	int n=0;
+	unsigned int n=0;
 	unsigned int i,j;
 	n = sprintf(OutBuf,"scan count = 0x%x\r\n",ScanCount);
 	n += sprintf(OutBuf+n,"------------------------------------------------------------------------------\r\n");
@@ -149,14 +160,14 @@ void PrintDiamond(CALC_DIAMOND_BUF *DiamondBuf,char *OutBuf,int ScanCount)
 int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 {
 	unsigned int i,j,k,xDiamondNum,yDiamondNum,disNUM,disNUM_f,PointNum;
-	int xPointNum[SCAN_X_SQUARE_NUM],xPointNumSum;
-	int yPointNum[SCAN_Y_SQUARE_NUM],yPointNumSum;
-	int PointNumTmp,PointNumTmp_t;
-	int PosTem;
-	int xSure, ySure;
-	int DiamondNumTmp;
-	int tmp;
-	char xNeedSub[SCAN_X_SQUARE_NUM],yNeedSub[SCAN_Y_SQUARE_NUM];
+	signed int xPointNum[SCAN_X_SQUARE_NUM],xPointNumSum;
+	signed int yPointNum[SCAN_Y_SQUARE_NUM],yPointNumSum;
+	signed int PointNumTmp,PointNumTmp_t;
+	signed int PosTem;
+	signed int xSure, ySure;
+	signed int DiamondNumTmp;
+	signed int tmp;
+	signed char xNeedSub[SCAN_X_SQUARE_NUM],yNeedSub[SCAN_Y_SQUARE_NUM];
 	CACL_DIAMOND_CENTER XPoint[MAX_POINT_REC*MAX_POINT_REC*SCAN_X_SQUARE_NUM];	//x方向菱形 中心点buff
 	CACL_DIAMOND_CENTER YPoint[MAX_POINT_REC*MAX_POINT_REC*SCAN_Y_SQUARE_NUM]; //y方向菱形 中心点buff
 	CALC_DISTANCE DistanceTmp[MAX_POINT_REC*MAX_POINT_REC*SCAN_X_SQUARE_NUM*MAX_POINT_REC*MAX_POINT_REC*SCAN_Y_SQUARE_NUM];	//中心点间距buff
@@ -520,7 +531,7 @@ RESTART_LESS:
 	//采样误差造成，可能会少点 通过扩大阈值来 补充点
 	if (PointNumTmp < PointNum)	
 	{
-		while ((DistanceTmp[PointNumTmp].distance < DISTANCE_THRESHOLD_WC) && (PointNumTmp < PointNum)) 
+		while ((DistanceTmp[PointNumTmp].distance < DISTANCE_THRESHOLD_WC) && (PointNumTmp < PointNum)&&(PointNumTmp<disNUM)) 
 		{
 			PointNumTmp++;	//确实少点 那就按照 少点来计算
 		}
@@ -1698,7 +1709,7 @@ void ForceDeleteAtDistance(CALC_DISTANCE *dis,int pos,int *len)
 	*len = i;
 }
 //删除distance数组里面某个值
-void DeleteAtDistance(CALC_DISTANCE *dis,int pos,int *len)
+void DeleteAtDistance(CALC_DISTANCE *dis,int pos,unsigned int *len)
 {
 	int i;
 	CALC_DISTANCE dis_tmp;

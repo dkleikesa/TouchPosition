@@ -63,7 +63,7 @@ DrawGraph::~DrawGraph(void)
 
 void DrawGraph::ClearPointIDBuf(void)
 {
-	memset(&g_PointStatus,0,sizeof(PT_STATUS));
+	ClearPointID();
 }
 void DrawGraph::DrawTrack_Onice(void)
 {
