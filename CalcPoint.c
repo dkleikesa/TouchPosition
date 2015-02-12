@@ -159,7 +159,7 @@ void PrintDiamond(CALC_DIAMOND_BUF *DiamondBuf,char *OutBuf,int ScanCount)
 //返回值：触摸点的个数
 int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 {
-	unsigned int i,j,k,xDiamondNum,yDiamondNum,disNUM,disNUM_f,PointNum;
+	unsigned int i,j,k,m,xDiamondNum,yDiamondNum,disNUM,disNUM_f,PointNum;
 	signed int xPointNum[SCAN_X_SQUARE_NUM],xPointNumSum;
 	signed int yPointNum[SCAN_Y_SQUARE_NUM],yPointNumSum;
 	signed int PointNumTmp,PointNumTmp_t;

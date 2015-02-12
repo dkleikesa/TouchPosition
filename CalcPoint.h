@@ -204,22 +204,22 @@ typedef struct PT_STATUS_L_S
 #endif
 
 #define ADD_LOST_POINT_X	\
-for(j=PointNumTmp;j< PointNumTmp_t;j++)	\
+for(m=PointNumTmp;m< PointNumTmp_t;m++)	\
 {	\
-	if(DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[j].XPos].Rec,XPoint[DistanceTmp[j].XPos].Diamond)==DiamondNumTmp)	\
+	if(DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[m].XPos].Rec,XPoint[DistanceTmp[m].XPos].Diamond)==DiamondNumTmp)	\
 	{	\
-		ExcDistance(DistanceTmp,PointNumTmp,j);	\
+		ExcDistance(DistanceTmp,PointNumTmp,m);	\
 		PointNumTmp++;	\
 		PRINTFF("X add lost point %08x no point\r\n",j,k,DiamondNumTmp);	\
 	}	\
 }
 
 #define ADD_LOST_POINT_Y	\
-	for(j=PointNumTmp;j< PointNumTmp_t;j++)	\
+	for(m=PointNumTmp;m< PointNumTmp_t;m++)	\
 {	\
-	if(DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[j].YPos].Rec,YPoint[DistanceTmp[j].YPos].Diamond)==DiamondNumTmp)	\
+	if(DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[m].YPos].Rec,YPoint[DistanceTmp[m].YPos].Diamond)==DiamondNumTmp)	\
 {	\
-	ExcDistance(DistanceTmp,PointNumTmp,j);	\
+	ExcDistance(DistanceTmp,PointNumTmp,m);	\
 	PointNumTmp++;	\
 	PRINTFF("Y add lost point %08x no point\r\n",j,k,DiamondNumTmp);	\
 }	\
