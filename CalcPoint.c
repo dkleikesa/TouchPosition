@@ -42,13 +42,13 @@ static __INLINE int CalclDistance_Short(struct POINT *a,struct POINT *b)
 	return CALCL_SQUAR((a->x) - (b->x)) + CALCL_SQUAR((a->y)-(b->y));
 }
 
-static __INLINE int  AdjustXRec_X (CALC_DIAMOND* p,int y0,char rec)
+static __INLINE unsigned short  AdjustXRec_X (CALC_DIAMOND* p,int y0,char rec)
 {
 	if ((((CALC_DIAMOND*)p)->strPoint0.y - ((CALC_DIAMOND*)p)->strPoint3.y) == 0)
 	{
-		return CALCL_REL_TO_ABS(CALCL_X_DIAMOND_CENTRE_X(*p),rec);
+		return (unsigned short)CALCL_REL_TO_ABS(CALCL_X_DIAMOND_CENTRE_X(*p),rec);
 	}
-	return CALCL_REL_TO_ABS(ADJUST_XREC_X_REL(p,y0),rec);
+	return (unsigned short)CALCL_REL_TO_ABS(ADJUST_XREC_X_REL(p,y0),rec);
 }
 static __INLINE int  AdjustXRec_X_L (CALC_DIAMOND* p,int y0)
 {
@@ -59,13 +59,13 @@ static __INLINE int  AdjustXRec_X_L (CALC_DIAMOND* p,int y0)
 	return ADJUST_XREC_X_REL(p,y0);
 }
 
-static __INLINE int  AdjustYRec_Y(CALC_DIAMOND* p,int x0,char rec) 
+static __INLINE unsigned short  AdjustYRec_Y(CALC_DIAMOND* p,int x0,char rec) 
 {
 	if ((((CALC_DIAMOND*)p)->strPoint3.x - ((CALC_DIAMOND*)p)->strPoint0.x) == 0)
 	{
-		return  CALCL_REL_TO_ABS(CALCL_Y_DIAMOND_CENTRE_Y(*p),rec);
+		return (unsigned short) CALCL_REL_TO_ABS(CALCL_Y_DIAMOND_CENTRE_Y(*p),rec);
 	}
-	return CALCL_REL_TO_ABS(ADJUST_YREC_Y_REL(p,x0),rec);
+	return (unsigned short)CALCL_REL_TO_ABS(ADJUST_YREC_Y_REL(p,x0),rec);
 }
 static __INLINE int  AdjustYRec_Y_L(CALC_DIAMOND* p,int x0 ) 
 {
@@ -86,7 +86,7 @@ static __INLINE void GetNumOne(char* dis,int k)
 }
 static __INLINE void ClearPos(CACL_PROJECTION_COUNT* dis,int k)  
 {
-	
+
 	char tem ;
 	tem = (char)(k>>8);
 	if (tem == 2)
@@ -223,13 +223,13 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 					max(XProjectionCount[i].BCount,(char)(DIAMOND_X_GET_N(DiamondBuf,i,j)));
 				break;
 			}
-				
+
 			if((DIAMOND_X_GET_P(DiamondBuf,i,j,1).y ==0) || (DIAMOND_X_GET_P(DiamondBuf,i,j,1).y ==TATAL_HEIGHT) ||			//三角形
 				(DIAMOND_X_GET_P(DiamondBuf,i,j,2).y ==0)|| (DIAMOND_X_GET_P(DiamondBuf,i,j,2).y ==TATAL_HEIGHT))
 			{
 				if(DIAMOND_X_GET_P(DiamondBuf,i,j,0).x == DIAMOND_X_GET_P(DiamondBuf,i,j,3).x)	//边界三角形
 				{
-					
+
 					if (DIAMOND_X_GET_P(DiamondBuf,i,j,2).y == DIAMOND_X_GET_P(DiamondBuf,i,j,3).y)
 					{
 						DIAMOND_X_GET_P(DiamondBuf,i,j,2).x = DIAMOND_X_GET_P(DiamondBuf,i,j,0).x;
@@ -271,7 +271,7 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 				xNeedSub[i]++;
 			}
 
-			
+
 			XPoint[xDiamondNum].Rec = i;
 			XPoint[xDiamondNum].Diamond = j;
 			if (XPoint[xDiamondNum].Point.x > TOTAL_LENGTH|| XPoint[xDiamondNum].Point.y>TATAL_HEIGHT)
@@ -345,7 +345,7 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 					{
 						YPoint[yDiamondNum].Point.x = DIAMOND_Y_GET_P(DiamondBuf,i,j,2).x;
 						YPoint[yDiamondNum].Point.y = CALCL_AVERAGE_TWO(DIAMOND_Y_GET_P(DiamondBuf,i,j,2).y ,
-							 AdjustYRec_Y_L(&DIAMOND_Y_GET_D(DiamondBuf,i,j), DIAMOND_Y_GET_P(DiamondBuf,i,j,2).x));
+							AdjustYRec_Y_L(&DIAMOND_Y_GET_D(DiamondBuf,i,j), DIAMOND_Y_GET_P(DiamondBuf,i,j,2).x));
 					}
 					if ((DIAMOND_Y_GET_P(DiamondBuf,i,j,2).x ==0)|| (DIAMOND_Y_GET_P(DiamondBuf,i,j,2).x ==TOTAL_LENGTH))
 					{
@@ -366,7 +366,7 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 			{
 				yNeedSub[i]++;
 			}
-			
+
 			YPoint[yDiamondNum].Rec = i;
 			YPoint[yDiamondNum].Diamond = j;
 			if (YPoint[yDiamondNum].Point.x > TOTAL_LENGTH|| YPoint[yDiamondNum].Point.y>TATAL_HEIGHT)
@@ -381,7 +381,7 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 		}
 	}
 
-/*	for(i = 0; i<xDiamondNum ;i ++)
+	/*for(i = 0; i<xDiamondNum ;i ++)
 	{
 	point[i].pt_val.x = XPoint[i].Point.x;
 	point[i].pt_val.y = XPoint[i].Point.y;
@@ -416,13 +416,13 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 	{
 		xPointNum[i] = max((XProjectionCount[i].ACount + XProjectionCount[i].DCount + 2),
 			(XProjectionCount[i].BCount + XProjectionCount[i].CCount + 2));
-		if (i>1)
+		if (i>=1)
 		{
 			if (xNeedSub[i-1]>0)
 			{
 				if ( xPointNum[i]>0)
 				{
-					 xPointNum[i]--;
+					xPointNum[i]--;
 				}
 			}
 		}
@@ -444,7 +444,7 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 		yPointNum[i] =  max((YProjectionCount[i].ACount + YProjectionCount[i].DCount + 2),
 			(YProjectionCount[i].BCount + YProjectionCount[i].CCount + 2));
 
-		if (i>1)
+		if (i>=1)
 		{
 			if (yNeedSub[i-1]>0)
 			{
@@ -519,7 +519,7 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 			yPointNum[k] = PointNum;
 		}
 	}
-	
+
 	shell_sort(DistanceTmp,disNUM);	//排序
 	PointNumTmp = GetThresholdPos(DistanceTmp, disNUM);	//获取点个数
 	PRINTFF("xPoint=%d yPoint=%d PointNum=%d PointNumTmp=%d\r\n",xPointNumSum,yPointNumSum,PointNum,PointNumTmp);
@@ -536,15 +536,9 @@ RESTART_LESS:
 			PointNumTmp++;	//确实少点 那就按照 少点来计算
 		}
 	}
+	PointNumTmp_t = PointNumTmp;
 
-	//memset(xPointNum,0,sizeof(xPointNum));	//x方向菱形数算出来的实际点个数
-	//memset(yPointNum,0,sizeof(yPointNum));	//y方向菱形计算出来的实际点个数
-	//for(i = 0;i < PointNumTmp; i++)	//求出每个矩形 拥有的点数
-	//{
-	//	xPointNum[XPoint[DistanceTmp[i].XPos].Rec]++ ;
-	//	yPointNum[YPoint[DistanceTmp[i].YPos].Rec]++ ;
-	//}
-
+//goto COPY_POINT;
 	for(i = 0;i < SCAN_X_SQUARE_NUM; i++)  
 	{
 		if(xPointNum[i] ==0)	//没有点 略过
@@ -554,7 +548,7 @@ RESTART_LESS:
 		//	continue;
 		//}
 		if((xSure == 1)||(xPointNum[i] == 3))
-		//if(xSure == 1)
+			//if(xSure == 1)
 		{
 
 			if(((XProjectionCount[i].ACount + XProjectionCount[i].DCount + 2) > xPointNum[i]) ||// AD两个三角形投影个数大于点个数那么 这就是一个错误帧
@@ -743,7 +737,7 @@ RESTART_LESS:
 		//	continue;
 		//}
 		if((ySure == 1)||(yPointNum[i] == 3))
-		//if(ySure == 1)
+			//if(ySure == 1)
 		{
 
 			if (((YProjectionCount[i].ACount + YProjectionCount[i].DCount + 2) > yPointNum[i])||
@@ -912,9 +906,228 @@ RESTART_LESS:
 		}
 	}
 
+#if 1
+	//每个投影都有点
+	if (PointNumTmp == PointNum)
+	{
+		for (j = 0;j < PointNumTmp;j++)
+		{
+			ClearPos(&XProjectionCount[XPoint[DistanceTmp[j].XPos].Rec],
+				DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[j].XPos].Rec,XPoint[DistanceTmp[j].XPos].Diamond));
+			ClearPos(&YProjectionCount[YPoint[DistanceTmp[j].YPos].Rec],
+				DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[j].YPos].Rec,YPoint[DistanceTmp[j].YPos].Diamond));
+		}
+		for(i = 0;i < SCAN_X_SQUARE_NUM; i++)  
+		{
+			if(xPointNum[i] ==0)	//没有点 略过
+				continue;
+
+			for (j=0;j<3;j++)
+			{
+				if(XProjectionCount[i].APos[j]==0)
+				{
+					continue;
+				}
+				DiamondNumTmp = 0;
+				//					PRINTFF("X A projection %d %d %d no point\r\n",i,j,XProjectionCount[i].APos[j]);
+				DiamondNumTmp |= (j<<16);
+
+				for (k=0;k<3;k++)
+				{
+					if(XProjectionCount[i].CPos[k]!=0)
+					{
+
+						DiamondNumTmp |= (0x0200|k);
+						PRINTFF("X AC find diamond  %d %d %08x no point\r\n",j,k,DiamondNumTmp);
+						ADD_LOST_POINT_X;
+
+					}
+				}
+			}
+
+			for (j=0;j<3;j++)
+			{
+				if(XProjectionCount[i].APos[j]==0)
+				{
+					continue;
+				}
+				DiamondNumTmp = 0;
+				//				PRINTFF("X A projection %d %d %d no point\r\n",i,j,XProjectionCount[i].APos[j]);
+				DiamondNumTmp |= (j<<16);
+
+				for (k=0;k<3;k++)
+				{
+
+					if(XProjectionCount[i].BPos[k]!=0)
+					{
+
+						DiamondNumTmp |= (0x0300|k);
+						PRINTFF("X AB find diamond  %d %d %08x no point\r\n",j,k,DiamondNumTmp);
+						ADD_LOST_POINT_X;
+
+					}
+				}
+			}
+
+			for (j=0;j<3;j++)
+			{
+				if(XProjectionCount[i].DPos[j]==0)
+				{
+					continue;
+				}
+				DiamondNumTmp = 0;
+				//				PRINTFF("X D projection %d %d %d no point\r\n",i,j,XProjectionCount[i].DPos[j]);
+				DiamondNumTmp |= ((0x0100|j)<<16);
+
+				for (k=0;k<3;k++)
+				{
+					if(XProjectionCount[i].CPos[k]!=0)
+					{
+
+						DiamondNumTmp |= (0x0200|k);
+						PRINTFF("X DC find diamond  %d %d %08x no point\r\n",j,k,DiamondNumTmp);
+						ADD_LOST_POINT_X;
+					}
+				}
+			}
+
+			for (j=0;j<3;j++)
+			{
+				if(XProjectionCount[i].DPos[j]==0)
+				{
+					continue;
+				}
+				DiamondNumTmp = 0;
+				//				PRINTFF("X A projection %d %d %d no point\r\n",i,j,XProjectionCount[i].APos[j]);
+				DiamondNumTmp |= ((0x0100|j)<<16);
+
+				for (k=0;k<3;k++)
+				{
+
+					if(XProjectionCount[i].BPos[k]!=0)
+					{
+
+						DiamondNumTmp |= (0x0300|k);
+						PRINTFF("X DB find diamond  %d %d %08x no point\r\n",j,k,DiamondNumTmp);
+						ADD_LOST_POINT_X;
+					}
+				}
+			}
+
+
+
+		}
+		//		if (PointNumTmp > PointNum)
+		//		goto RESTART_MORE;
+		//..Y------------------------------------------
+		for(i = 0;i < SCAN_Y_SQUARE_NUM; i++) 
+		{
+			if(yPointNum[i] ==0)
+				continue;
+			for (j=0;j<3;j++)
+			{
+				if(YProjectionCount[i].APos[j]==0)
+				{
+					continue;
+				}
+				DiamondNumTmp = 0;
+				//					PRINTFF("X A projection %d %d %d no point\r\n",i,j,XProjectionCount[i].APos[j]);
+				DiamondNumTmp |= (j<<16);
+
+				for (k=0;k<3;k++)
+				{
+					if(YProjectionCount[i].CPos[k]!=0)
+					{
+
+						DiamondNumTmp |= (0x0200|k);
+						PRINTFF("Y AC find diamond  %d %d %08x no point\r\n",j,k,DiamondNumTmp);
+						ADD_LOST_POINT_Y;
+
+					}
+				}
+			}
+
+			for (j=0;j<3;j++)
+			{
+				if(YProjectionCount[i].APos[j]==0)
+				{
+					continue;
+				}
+				DiamondNumTmp = 0;
+				//				PRINTFF("X A projection %d %d %d no point\r\n",i,j,YProjectionCount[i].APos[j]);
+				DiamondNumTmp |= (j<<16);
+
+				for (k=0;k<3;k++)
+				{
+
+					if(YProjectionCount[i].BPos[k]!=0)
+					{
+
+						DiamondNumTmp |= (0x0300|k);
+						PRINTFF("Y AB find diamond  %d %d %08x no point\r\n",j,k,DiamondNumTmp);
+						ADD_LOST_POINT_Y;
+
+					}
+				}
+			}
+
+			for (j=0;j<3;j++)
+			{
+				if(YProjectionCount[i].DPos[j]==0)
+				{
+					continue;
+				}
+				DiamondNumTmp = 0;
+				//				PRINTFF("X D projection %d %d %d no point\r\n",i,j,YProjectionCount[i].DPos[j]);
+				DiamondNumTmp |= ((0x0100|j)<<16);
+
+				for (k=0;k<3;k++)
+				{
+					if(YProjectionCount[i].CPos[k]!=0)
+					{
+
+						DiamondNumTmp |= (0x0200|k);
+						PRINTFF("Y DC find diamond  %d %d %08x no point\r\n",j,k,DiamondNumTmp);
+						ADD_LOST_POINT_Y;
+
+					}
+				}
+			}
+
+			for (j=0;j<3;j++)
+			{
+				if(YProjectionCount[i].DPos[j]==0)
+				{
+					continue;
+				}
+				DiamondNumTmp = 0;
+				//				PRINTFF("X A projection %d %d %d no point\r\n",i,j,YProjectionCount[i].APos[j]);
+				DiamondNumTmp |= ((0x0100|j)<<16);
+
+				for (k=0;k<3;k++)
+				{
+
+					if(YProjectionCount[i].BPos[k]!=0)
+					{
+
+						DiamondNumTmp |= (0x0300|k);
+						PRINTFF("Y DB find diamond  %d %d %08x no point\r\n",j,k,DiamondNumTmp);
+						ADD_LOST_POINT_Y;
+					}
+				}
+			}
+
+
+
+		}
+
+	}
+#endif
+
 
 	//可能存在边界点，菱形细长，需要特殊处理
 	if (PointNumTmp < PointNum)
+	//	if (PointNumTmp < 0)
 	{
 		for(i = PointNumTmp;i < disNUM_f; i++)
 		{	
@@ -942,7 +1155,7 @@ RESTART_LESS:
 			}
 		}
 		PointNumTmp_t = PointNumTmp;
-//#if 1
+		//#if 1
 RESTART_MORE:
 		for(i = 0;i < SCAN_X_SQUARE_NUM; i++)  
 		{
@@ -968,7 +1181,8 @@ RESTART_MORE:
 							//删除使用同一个菱形的数据
 							if (DistanceTmp[j].XPos == DistanceTmp[k].XPos)
 							{
-								if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
+								if(abs(XPoint[DistanceTmp[j].XPos].Point.x - YPoint[DistanceTmp[j].YPos].Point.x) >
+									abs(XPoint[DistanceTmp[k].XPos].Point.x - YPoint[DistanceTmp[k].YPos].Point.x))
 								{
 									ForceDeleteAtDistance(DistanceTmp,j,&PointNumTmp);
 								}
@@ -988,7 +1202,8 @@ RESTART_MORE:
 							if ((DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[j].XPos].Rec,XPoint[DistanceTmp[j].XPos].Diamond) & 0xffff0000) == //删除AD两个三角形里面重复使用投影的的点
 								(DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[k].XPos].Rec,XPoint[DistanceTmp[k].XPos].Diamond) & 0xffff0000))
 							{
-								if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
+								if(abs(XPoint[DistanceTmp[j].XPos].Point.x - YPoint[DistanceTmp[j].YPos].Point.x) >
+									abs(XPoint[DistanceTmp[k].XPos].Point.x - YPoint[DistanceTmp[k].YPos].Point.x))
 								{
 									ForceDeleteAtDistance(DistanceTmp,j,&PointNumTmp);
 								}
@@ -1003,7 +1218,8 @@ RESTART_MORE:
 							if ((DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[j].XPos].Rec,XPoint[DistanceTmp[j].XPos].Diamond) &0x0000ffff) ==  //删除BC两个三角形里面重复使用投影的的点
 								(DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[k].XPos].Rec,XPoint[DistanceTmp[k].XPos].Diamond) &0x0000ffff))
 							{
-								if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
+								if(abs(XPoint[DistanceTmp[j].XPos].Point.x - YPoint[DistanceTmp[j].YPos].Point.x) >
+									abs(XPoint[DistanceTmp[k].XPos].Point.x - YPoint[DistanceTmp[k].YPos].Point.x))
 								{
 									ForceDeleteAtDistance(DistanceTmp,j,&PointNumTmp);
 								}
@@ -1028,7 +1244,8 @@ RESTART_MORE:
 							//删除使用同一个菱形的数据
 							if (DistanceTmp[j].XPos == DistanceTmp[k].XPos)
 							{
-								if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
+								if(abs(XPoint[DistanceTmp[j].XPos].Point.x - YPoint[DistanceTmp[j].YPos].Point.x) >
+									abs(XPoint[DistanceTmp[k].XPos].Point.x - YPoint[DistanceTmp[k].YPos].Point.x))
 								{
 									ForceDeleteAtDistance(DistanceTmp,j,&PointNumTmp);
 								}
@@ -1048,7 +1265,8 @@ RESTART_MORE:
 							if ((DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[j].XPos].Rec,XPoint[DistanceTmp[j].XPos].Diamond) & 0xffff0000) == //删除AD两个三角形里面重复使用投影的的点
 								(DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[k].XPos].Rec,XPoint[DistanceTmp[k].XPos].Diamond) & 0xffff0000))
 							{
-								if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
+								if(abs(XPoint[DistanceTmp[j].XPos].Point.x - YPoint[DistanceTmp[j].YPos].Point.x) >
+									abs(XPoint[DistanceTmp[k].XPos].Point.x - YPoint[DistanceTmp[k].YPos].Point.x))
 								{
 									ForceDeleteAtDistance(DistanceTmp,j,&PointNumTmp);
 								}
@@ -1077,7 +1295,8 @@ RESTART_MORE:
 							//删除使用同一个菱形的数据
 							if (DistanceTmp[j].XPos == DistanceTmp[k].XPos)
 							{
-								if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
+								if(abs(XPoint[DistanceTmp[j].XPos].Point.x - YPoint[DistanceTmp[j].YPos].Point.x) >
+									abs(XPoint[DistanceTmp[k].XPos].Point.x - YPoint[DistanceTmp[k].YPos].Point.x))
 								{
 									ForceDeleteAtDistance(DistanceTmp,j,&PointNumTmp);
 								}
@@ -1097,7 +1316,8 @@ RESTART_MORE:
 							if ((DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[j].XPos].Rec,XPoint[DistanceTmp[j].XPos].Diamond) &0x0000ffff) ==  //删除BC两个三角形里面重复使用投影的的点
 								(DIAMOND_X_GET_N(DiamondBuf,XPoint[DistanceTmp[k].XPos].Rec,XPoint[DistanceTmp[k].XPos].Diamond) &0x0000ffff))
 							{
-								if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
+								if(abs(XPoint[DistanceTmp[j].XPos].Point.x - YPoint[DistanceTmp[j].YPos].Point.x) >
+									abs(XPoint[DistanceTmp[k].XPos].Point.x - YPoint[DistanceTmp[k].YPos].Point.x))
 								{
 									ForceDeleteAtDistance(DistanceTmp,j,&PointNumTmp);
 								}
@@ -1140,7 +1360,8 @@ RESTART_MORE:
 							//删除使用同一个菱形的数据
 							if (DistanceTmp[j].YPos == DistanceTmp[k].YPos)
 							{
-								if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
+								if(abs(XPoint[DistanceTmp[j].XPos].Point.y - YPoint[DistanceTmp[j].YPos].Point.y) >
+									abs(XPoint[DistanceTmp[k].XPos].Point.y - YPoint[DistanceTmp[k].YPos].Point.y))
 								{
 									ForceDeleteAtDistance(DistanceTmp,j,&PointNumTmp);
 								}
@@ -1159,7 +1380,8 @@ RESTART_MORE:
 							if ((DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[j].YPos].Rec,YPoint[DistanceTmp[j].YPos].Diamond) &0xffff0000) == 
 								(DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[k].YPos].Rec,YPoint[DistanceTmp[k].YPos].Diamond) &0xffff0000))
 							{
-								if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
+								if(abs(XPoint[DistanceTmp[j].XPos].Point.y - YPoint[DistanceTmp[j].YPos].Point.y) >
+									abs(XPoint[DistanceTmp[k].XPos].Point.y - YPoint[DistanceTmp[k].YPos].Point.y))
 								{
 									ForceDeleteAtDistance(DistanceTmp,j,&PointNumTmp);
 								}
@@ -1174,7 +1396,8 @@ RESTART_MORE:
 							if ((DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[j].YPos].Rec,YPoint[DistanceTmp[j].YPos].Diamond) &0x0000ffff) == 
 								(DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[k].YPos].Rec,YPoint[DistanceTmp[k].YPos].Diamond) &0x0000ffff))
 							{
-								if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
+								if(abs(XPoint[DistanceTmp[j].XPos].Point.y - YPoint[DistanceTmp[j].YPos].Point.y) >
+									abs(XPoint[DistanceTmp[k].XPos].Point.y - YPoint[DistanceTmp[k].YPos].Point.y))
 								{
 									ForceDeleteAtDistance(DistanceTmp,j,&PointNumTmp);
 								}
@@ -1200,7 +1423,8 @@ RESTART_MORE:
 							//删除使用同一个菱形的数据
 							if (DistanceTmp[j].YPos == DistanceTmp[k].YPos)
 							{
-								if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
+								if(abs(XPoint[DistanceTmp[j].XPos].Point.y - YPoint[DistanceTmp[j].YPos].Point.y) >
+									abs(XPoint[DistanceTmp[k].XPos].Point.y - YPoint[DistanceTmp[k].YPos].Point.y))
 								{
 									ForceDeleteAtDistance(DistanceTmp,j,&PointNumTmp);
 								}
@@ -1219,7 +1443,8 @@ RESTART_MORE:
 							if ((DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[j].YPos].Rec,YPoint[DistanceTmp[j].YPos].Diamond) &0xffff0000) == 
 								(DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[k].YPos].Rec,YPoint[DistanceTmp[k].YPos].Diamond) &0xffff0000))
 							{
-								if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
+								if(abs(XPoint[DistanceTmp[j].XPos].Point.y - YPoint[DistanceTmp[j].YPos].Point.y) >
+									abs(XPoint[DistanceTmp[k].XPos].Point.y - YPoint[DistanceTmp[k].YPos].Point.y))
 								{
 									ForceDeleteAtDistance(DistanceTmp,j,&PointNumTmp);
 								}
@@ -1245,7 +1470,8 @@ RESTART_MORE:
 						for (k = j+1 ;k < PointNumTmp ;k++)
 						{
 							//删除使用同一个菱形的数据
-							if (DistanceTmp[j].YPos == DistanceTmp[k].YPos)
+							if(abs(XPoint[DistanceTmp[j].XPos].Point.y - YPoint[DistanceTmp[j].YPos].Point.y) >
+								abs(XPoint[DistanceTmp[k].XPos].Point.y - YPoint[DistanceTmp[k].YPos].Point.y))
 							{
 								if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
 								{
@@ -1266,7 +1492,8 @@ RESTART_MORE:
 							if ((DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[j].YPos].Rec,YPoint[DistanceTmp[j].YPos].Diamond) &0x0000ffff) == 
 								(DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[k].YPos].Rec,YPoint[DistanceTmp[k].YPos].Diamond) &0x0000ffff))
 							{
-								if (DistanceTmp[j].distance >  DistanceTmp[k].distance)
+								if(abs(XPoint[DistanceTmp[j].XPos].Point.y - YPoint[DistanceTmp[j].YPos].Point.y) >
+									abs(XPoint[DistanceTmp[k].XPos].Point.y - YPoint[DistanceTmp[k].YPos].Point.y))
 								{
 									ForceDeleteAtDistance(DistanceTmp,j,&PointNumTmp);
 								}
@@ -1285,8 +1512,8 @@ RESTART_MORE:
 		}
 
 		//如果还少。。。
-	//	if (PointNumTmp < PointNum)
-		if (PointNumTmp < 0)
+		if (PointNumTmp < PointNum)
+			//	if (PointNumTmp < 0)
 		{
 			for (j = 0;j < PointNumTmp;j++)
 			{
@@ -1301,7 +1528,7 @@ RESTART_MORE:
 			{
 				if(xPointNum[i] ==0)	//没有点 略过
 					continue;
-				
+
 				for (j=0;j<3;j++)
 				{
 					if(XProjectionCount[i].APos[j]==0)
@@ -1309,17 +1536,17 @@ RESTART_MORE:
 						continue;
 					}
 					DiamondNumTmp = 0;
-//					PRINTFF("X A projection %d %d %d no point\r\n",i,j,XProjectionCount[i].APos[j]);
+					//					PRINTFF("X A projection %d %d %d no point\r\n",i,j,XProjectionCount[i].APos[j]);
 					DiamondNumTmp |= (j<<16);
 
 					for (k=0;k<3;k++)
 					{
 						if(XProjectionCount[i].CPos[k]!=0)
 						{
-							
+
 							DiamondNumTmp |= (0x0200|k);
 							PRINTFF("X AC find diamond  %d %d %08x no point\r\n",j,k,DiamondNumTmp);
-							 ADD_LOST_POINT_X;
+							ADD_LOST_POINT_X;
 
 						}
 					}
@@ -1332,7 +1559,7 @@ RESTART_MORE:
 						continue;
 					}
 					DiamondNumTmp = 0;
-	//				PRINTFF("X A projection %d %d %d no point\r\n",i,j,XProjectionCount[i].APos[j]);
+					//				PRINTFF("X A projection %d %d %d no point\r\n",i,j,XProjectionCount[i].APos[j]);
 					DiamondNumTmp |= (j<<16);
 
 					for (k=0;k<3;k++)
@@ -1343,7 +1570,7 @@ RESTART_MORE:
 
 							DiamondNumTmp |= (0x0300|k);
 							PRINTFF("X AB find diamond  %d %d %08x no point\r\n",j,k,DiamondNumTmp);
-							 ADD_LOST_POINT_X;
+							ADD_LOST_POINT_X;
 
 						}
 					}
@@ -1356,7 +1583,7 @@ RESTART_MORE:
 						continue;
 					}
 					DiamondNumTmp = 0;
-	//				PRINTFF("X D projection %d %d %d no point\r\n",i,j,XProjectionCount[i].DPos[j]);
+					//				PRINTFF("X D projection %d %d %d no point\r\n",i,j,XProjectionCount[i].DPos[j]);
 					DiamondNumTmp |= ((0x0100|j)<<16);
 
 					for (k=0;k<3;k++)
@@ -1366,7 +1593,7 @@ RESTART_MORE:
 
 							DiamondNumTmp |= (0x0200|k);
 							PRINTFF("X DC find diamond  %d %d %08x no point\r\n",j,k,DiamondNumTmp);
-							 ADD_LOST_POINT_X;
+							ADD_LOST_POINT_X;
 						}
 					}
 				}
@@ -1378,7 +1605,7 @@ RESTART_MORE:
 						continue;
 					}
 					DiamondNumTmp = 0;
-	//				PRINTFF("X A projection %d %d %d no point\r\n",i,j,XProjectionCount[i].APos[j]);
+					//				PRINTFF("X A projection %d %d %d no point\r\n",i,j,XProjectionCount[i].APos[j]);
 					DiamondNumTmp |= ((0x0100|j)<<16);
 
 					for (k=0;k<3;k++)
@@ -1389,16 +1616,16 @@ RESTART_MORE:
 
 							DiamondNumTmp |= (0x0300|k);
 							PRINTFF("X DB find diamond  %d %d %08x no point\r\n",j,k,DiamondNumTmp);
-							 ADD_LOST_POINT_X;
+							ADD_LOST_POINT_X;
 						}
 					}
 				}
 
 
-				
+
 			}
-	//		if (PointNumTmp > PointNum)
-	//		goto RESTART_MORE;
+			//		if (PointNumTmp > PointNum)
+			//		goto RESTART_MORE;
 			//..Y------------------------------------------
 			for(i = 0;i < SCAN_Y_SQUARE_NUM; i++) 
 			{
@@ -1421,6 +1648,7 @@ RESTART_MORE:
 
 							DiamondNumTmp |= (0x0200|k);
 							PRINTFF("Y AC find diamond  %d %d %08x no point\r\n",j,k,DiamondNumTmp);
+							ADD_LOST_POINT_Y;
 
 						}
 					}
@@ -1444,6 +1672,7 @@ RESTART_MORE:
 
 							DiamondNumTmp |= (0x0300|k);
 							PRINTFF("Y AB find diamond  %d %d %08x no point\r\n",j,k,DiamondNumTmp);
+							ADD_LOST_POINT_Y;
 
 						}
 					}
@@ -1466,6 +1695,7 @@ RESTART_MORE:
 
 							DiamondNumTmp |= (0x0200|k);
 							PRINTFF("Y DC find diamond  %d %d %08x no point\r\n",j,k,DiamondNumTmp);
+							ADD_LOST_POINT_Y;
 
 						}
 					}
@@ -1489,13 +1719,13 @@ RESTART_MORE:
 
 							DiamondNumTmp |= (0x0300|k);
 							PRINTFF("Y DB find diamond  %d %d %08x no point\r\n",j,k,DiamondNumTmp);
-
+							ADD_LOST_POINT_Y;
 						}
 					}
 				}
 
 
-				
+
 			}
 
 		}
@@ -1506,7 +1736,7 @@ RESTART_MORE:
 
 	if (PointNumTmp>PointNum)
 	{
-		
+
 	}
 COPY_POINT:
 	//返回所有有效值
@@ -1685,7 +1915,7 @@ static int CalcPointID(struct PT_BUF *point,int* num)
 //交换distance数组里面两个数据
 void ExcDistance(CALC_DISTANCE *dis,int src,int dst)
 {
-	
+
 	CALC_DISTANCE dis_tmp;
 	dis_tmp = dis[src];
 	dis[src] = dis[dst];

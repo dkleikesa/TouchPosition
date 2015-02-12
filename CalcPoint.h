@@ -40,8 +40,8 @@
 //点坐标结构
 typedef struct CALC_POINT_S
 {
-   unsigned int  x;    /*X坐标*/
-	unsigned int y;    /*Y坐标*/
+    signed int  x;    /*X坐标*/
+	signed int y;    /*Y坐标*/
 }CALC_POINT;
 
 //菱形坐标结构
@@ -91,10 +91,10 @@ typedef struct CACL_PROJECTION_COUNT_S
 	signed char BCount;
 	signed char CCount;
 	signed char DCount;
-	signed char APos[3];	//0、1、2、3表示三角形A、D、C、B
-	signed char BPos[3];	//0、1、2、3表示三角形A、D、C、B
-	signed char CPos[3];	//0、1、2、3表示三角形A、D、C、B
-	signed char DPos[3];	//0、1、2、3表示三角形A、D、C、B
+	signed char APos[3];	
+	signed char BPos[3];	
+	signed char CPos[3];	
+	signed char DPos[3];
 }CACL_PROJECTION_COUNT;
 
 #ifndef  __CC_ARM
@@ -212,6 +212,17 @@ for(j=PointNumTmp;j< PointNumTmp_t;j++)	\
 		PointNumTmp++;	\
 		PRINTFF("X add lost point %08x no point\r\n",j,k,DiamondNumTmp);	\
 	}	\
+}
+
+#define ADD_LOST_POINT_Y	\
+	for(j=PointNumTmp;j< PointNumTmp_t;j++)	\
+{	\
+	if(DIAMOND_Y_GET_N(DiamondBuf,YPoint[DistanceTmp[j].YPos].Rec,YPoint[DistanceTmp[j].YPos].Diamond)==DiamondNumTmp)	\
+{	\
+	ExcDistance(DistanceTmp,PointNumTmp,j);	\
+	PointNumTmp++;	\
+	PRINTFF("Y add lost point %08x no point\r\n",j,k,DiamondNumTmp);	\
+}	\
 }
 
 void PrintDiamond(CALC_DIAMOND_BUF *DiamondBuf,char *OutBuf,int ScanCount);
