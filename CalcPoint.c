@@ -1811,6 +1811,10 @@ static int CalcPointID(struct PT_BUF *point,int* num)
 		*num = MAX_POINT ;
 	}
 
+	for (i=0;i<*num;i++)	//把所有点ID 清零
+	{
+		point[i].id = 0;
+	}
 	//第一次触摸开始
 	if (g_PointStatus.ulLastPointNum == 0)
 	{
@@ -1833,22 +1837,15 @@ static int CalcPointID(struct PT_BUF *point,int* num)
 				continue;
 			}
 			g_PointStatus.LastPointUpTime[j]++;
-		}
-
-		for (i=0;i<*num;i++)
-		{
 
 			first = 0;
-			for (j=0;j<MAX_POINT;j++)
+			min_distance = 0x0fffffff;
+			for (i=0;i<*num;i++)
 			{
-				if (g_PointStatus.LastPoint[j].id == 0)
-				{
-					continue;
-				}
 				if (first == 0)
 				{
 					min_distance =  CalclDistance_Short(&point[i].pt_val, &g_PointStatus.LastPoint[j].pt_val);
-					min_pos = j;
+					min_pos = i;
 					first = 1;
 					continue;
 				}
@@ -1857,37 +1854,44 @@ static int CalcPointID(struct PT_BUF *point,int* num)
 				if (min_distance > distance_tem)
 				{
 					min_distance = distance_tem;
-					min_pos = j;
+					min_pos = i;
 				}
 
 			}
-			if (min_distance < DISTANCE_THRESHOLD_ID)	//这个点是个老点
+			if (min_distance < DISTANCE_THRESHOLD_ID)	//找到了对应的点
 			{
-				point[i].id = min_pos+1;
-				point[i].tip = 1;
-				point[i].valid = 1;
-				g_PointStatus.LastPoint[min_pos] = point[i];
+				point[min_pos].id = g_PointStatus.LastPoint[j].id;
+				point[min_pos].tip = 1;
+				point[min_pos].valid = 1;
+				g_PointStatus.LastPoint[j] = point[min_pos];
 				g_PointStatus.LastPointUpTime[min_pos] = 0;	//抬起次数清零
 			}
-			else	//是个新点
-			{
-				for (j=0;j<MAX_POINT;j++)
-				{
-					if (g_PointStatus.LastPoint[j].id != 0)
-					{
-						continue;
-					}
-					point[i].id = j+1;
-					point[i].tip = 1;
-					point[i].valid = 1;
-					g_PointStatus.LastPoint[j] = point[i];
-					g_PointStatus.ulLastPointNum++ ;
-					break;
-				}
-
-
-			}
 		}
+
+		//看看是否有新点
+		
+
+	for (i=0;i<*num;i++)
+	{
+		if (point[i].id != 0)
+		{
+			continue;
+		}
+		for (j=0; j<MAX_POINT;j++)
+		{
+			if (g_PointStatus.LastPoint[j].id != 0)
+			{
+				continue;
+			}
+			point[i].id = j+1;
+			point[i].tip = 1;
+			point[i].valid = 1;
+			g_PointStatus.LastPoint[j] = point[i];
+			g_PointStatus.ulLastPointNum++ ;
+			break;
+		}
+	}
+
 		//检测是不是有的点已经多次没有数据 如果没有数据，那就把这个点发送一次抬起事件
 		for (j=0;j<MAX_POINT;j++)
 		{
@@ -2043,3 +2047,4 @@ int GetMin(int* buf,int len,int *CurPos)
 	}
 	return min;
 }
+ 
