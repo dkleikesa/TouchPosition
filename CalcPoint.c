@@ -1842,6 +1842,10 @@ static int CalcPointID(struct PT_BUF *point,int* num)
 			min_distance = 0x0fffffff;
 			for (i=0;i<*num;i++)
 			{
+				if (point[i].id != 0)
+				{
+					continue;
+				}
 				if (first == 0)
 				{
 					min_distance =  CalclDistance_Short(&point[i].pt_val, &g_PointStatus.LastPoint[j].pt_val);
@@ -1864,7 +1868,7 @@ static int CalcPointID(struct PT_BUF *point,int* num)
 				point[min_pos].tip = 1;
 				point[min_pos].valid = 1;
 				g_PointStatus.LastPoint[j] = point[min_pos];
-				g_PointStatus.LastPointUpTime[min_pos] = 0;	//抬起次数清零
+				g_PointStatus.LastPointUpTime[j] = 0;	//抬起次数清零
 			}
 		}
 
@@ -1888,6 +1892,7 @@ static int CalcPointID(struct PT_BUF *point,int* num)
 			point[i].valid = 1;
 			g_PointStatus.LastPoint[j] = point[i];
 			g_PointStatus.ulLastPointNum++ ;
+			g_PointStatus.LastPointUpTime[j] = 0;	//抬起次数清零
 			break;
 		}
 	}
