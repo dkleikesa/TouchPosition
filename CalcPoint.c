@@ -521,7 +521,7 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 	}
 
 	shell_sort(DistanceTmp,disNUM);	//排序
-	PointNumTmp = GetThresholdPos(DistanceTmp, disNUM);	//获取点个数
+	PointNumTmp = GetThresholdPos(DistanceTmp, disNUM,DISTANCE_THRESHOLD);	//获取点个数
 	PRINTFF("xPoint=%d yPoint=%d PointNum=%d PointNumTmp=%d\r\n",xPointNumSum,yPointNumSum,PointNum,PointNumTmp);
 	/*3175-3375 多点*/
 	/*2f75 少点且通过距离判断点错误 需要通过投影来确定*/ 
@@ -1802,11 +1802,17 @@ CALC_POINT_END:
 
 static int CalcPointID(struct PT_BUF *point,int* num)
 {
-	int i,j,k;
-	int first;
-	int min_distance,min_pos;
-	int min_distanceA,min_posA;
-	int distance_tem;
+	unsigned int i,j,k;
+	unsigned int NeedContiune;
+
+	unsigned int DistanceNUM;
+	unsigned int DistanceNUM_t;
+	CALC_DISTANCE DistanceTmp[MAX_POINT*MAX_POINT];
+	POS_USE PosUse;
+
+	DistanceNUM = 0;
+	DistanceNUM_t = 0;
+	memset(&PosUse,0,sizeof(POS_USE));
 	if (*num > MAX_POINT)
 	{
 		*num = MAX_POINT ;
@@ -1831,112 +1837,81 @@ static int CalcPointID(struct PT_BUF *point,int* num)
 	}
 	if (g_PointStatus.ulLastPointNum > 0)
 	{
-		for (j=0;j<MAX_POINT;j++)
+		for (j=0;j<MAX_POINT;j++)	//所有点 抬起一次
 		{
 			if (g_PointStatus.LastPoint[j].id == 0)
 			{
 				continue;
 			}
 			g_PointStatus.LastPointUpTime[j]++;
-
-			if ((*num)<=0)
+		}
+		if ((*num)<=0)
+		{
+			goto DETECT_TOUCH_UP;
+		}
+		for (j=0;j<MAX_POINT;j++)
+		{
+			if (g_PointStatus.LastPoint[j].id == 0)
 			{
-				break;
+				continue;
 			}
-			first = 0;
-			min_distance = 0x0fffffff;
-			distance_tem = 0x1fffffff;
 			for (i=0;i<*num;i++)
 			{
-				if (point[i].id != 0)
-				{
-					continue;
-				}
-				if (first == 0)
-				{
-					min_distance =  CalclDistance_Short(&point[i].pt_val, &g_PointStatus.LastPoint[j].pt_val);
-					min_pos = i;
-					first = 1;
-					continue;
-				}
-
-				distance_tem = CalclDistance_Short(&point[i].pt_val, &g_PointStatus.LastPoint[j].pt_val);
-				if (min_distance > distance_tem)
-				{
-					min_distance = distance_tem;
-					min_pos = i;
-				}
-
+				DistanceTmp[DistanceNUM].distance = CalclDistance_Short(&point[i].pt_val, &g_PointStatus.LastPoint[j].pt_val);
+				DistanceTmp[DistanceNUM].XPos = j;	
+				DistanceTmp[DistanceNUM].YPos = i;
+				DistanceNUM++;
 			}
-
-			first = 0;
-			min_distanceA = 0x0fffffff;
-			distance_tem = 0x1fffffff;
-			for (i=0;i<MAX_POINT;i++)
-			{
-				if (g_PointStatus.LastPoint[i].id == 0)
-				{
-					continue;
-				}
-				if (first == 0)
-				{
-					min_distanceA = CalclDistance_Short(&point[min_pos].pt_val, &g_PointStatus.LastPoint[i].pt_val);
-					min_posA = i;
-					first = 1;
-					continue;
-				}
-				distance_tem =  CalclDistance_Short(&point[min_pos].pt_val, &g_PointStatus.LastPoint[i].pt_val);
-				if (min_distanceA > distance_tem)
-				{
-					min_distanceA = distance_tem;
-					min_posA = i;
-				}
-				
-			}
-
-			if (min_posA == j)
-			{
-				if (min_distanceA < DISTANCE_THRESHOLD_ID)	//找到了对应的点
-				{
-					point[min_pos].id = g_PointStatus.LastPoint[j].id;
-					point[min_pos].tip = 1;
-					point[min_pos].valid = 1;
-					g_PointStatus.LastPoint[j] = point[min_pos];
-					g_PointStatus.LastPointUpTime[j] = 0;	//抬起次数清零
-				}
-			}
-			else
-			{
-				if (min_distanceA < min_distance)
-				{
-					if (min_distanceA < DISTANCE_THRESHOLD_ID)	//找到了对应的点
-					{
-						point[min_pos].id = g_PointStatus.LastPoint[min_posA].id;
-						point[min_pos].tip = 1;
-						point[min_pos].valid = 1;
-						g_PointStatus.LastPoint[min_posA] = point[min_pos];
-						g_PointStatus.LastPointUpTime[min_posA] = 0;	//抬起次数清零
-					}
-				}
-				else
-				{
-					if (min_distance < DISTANCE_THRESHOLD_ID)	//找到了对应的点
-					{
-						point[min_pos].id = g_PointStatus.LastPoint[j].id;
-						point[min_pos].tip = 1;
-						point[min_pos].valid = 1;
-						g_PointStatus.LastPoint[j] = point[min_pos];
-						g_PointStatus.LastPointUpTime[j] = 0;	//抬起次数清零
-					}
-				}
-
-			}
-
 		}
 
-		//看看是否有新点
+		shell_sort(DistanceTmp , DistanceNUM); 
+		DistanceNUM_t = GetThresholdPos(DistanceTmp,DistanceNUM,DISTANCE_THRESHOLD_ID);
+
+		for (i = 0;i<DistanceNUM_t;i++)
+		{
+			//if (i == 0)
+			//{
+			//	point[DistanceTmp[0].YPos].id = g_PointStatus.LastPoint[DistanceTmp[0].XPos].id;
+			//	point[DistanceTmp[0].YPos].tip = 1;
+			//	point[DistanceTmp[0].YPos].valid = 1;
+			//	g_PointStatus.LastPoint[DistanceTmp[0].XPos] = point[DistanceTmp[0].YPos];
+			//	g_PointStatus.LastPointUpTime[DistanceTmp[0].XPos] = 0;	//抬起次数清零
+			//	PosUse.XPosUse[0]=DistanceTmp[0].XPos;
+			//	PosUse.YPosUse[0]=DistanceTmp[0].YPos;
+			//	PosUse.PosNum=1;
+			//	continue;
+			//}
+			NeedContiune = 0;
+
+			for (j=0;j<PosUse.PosNum;j++)
+			{
+				if ((DistanceTmp[i].XPos ==PosUse.XPosUse[j])||
+					(DistanceTmp[i].YPos ==PosUse.YPosUse[j]))
+				{
+					NeedContiune =1;
+					break;
+				}
+			}
+
+			if (NeedContiune == 1)
+			{
+				continue;
+			}
+
+			point[DistanceTmp[i].YPos].id = g_PointStatus.LastPoint[DistanceTmp[i].XPos].id;
+			point[DistanceTmp[i].YPos].tip = 1;
+			point[DistanceTmp[i].YPos].valid = 1;
+			g_PointStatus.LastPoint[DistanceTmp[i].XPos] = point[DistanceTmp[i].YPos];
+			g_PointStatus.LastPointUpTime[DistanceTmp[i].XPos] = 0;	//抬起次数清零
+			PosUse.XPosUse[PosUse.PosNum]=DistanceTmp[i].XPos;
+			PosUse.YPosUse[PosUse.PosNum]=DistanceTmp[i].YPos;
+			PosUse.PosNum++;
 		
 
+		}
+	
+	//看看是否有新点	
+DETECT_NEW_POINT:
 	for (i=0;i<*num;i++)
 	{
 		if (point[i].id != 0)
@@ -1959,6 +1934,7 @@ static int CalcPointID(struct PT_BUF *point,int* num)
 		}
 	}
 
+DETECT_TOUCH_UP:
 		//检测是不是有的点已经多次没有数据 如果没有数据，那就把这个点发送一次抬起事件
 		for (j=0;j<MAX_POINT;j++)
 		{
@@ -2027,12 +2003,12 @@ void DeleteAtDistance(CALC_DISTANCE *dis,int pos,unsigned int *len)
 }
 
 //获取当前小于距离阈值的位置
-static __INLINE int GetThresholdPos(CALC_DISTANCE *arr, int len)
+static __INLINE int GetThresholdPos(CALC_DISTANCE *arr,unsigned int len,unsigned int threshold)
 {
 	int i = 0;
 	for(i=0;i<len;i++)
 	{
-		if (arr[i].distance >= DISTANCE_THRESHOLD)
+		if (arr[i].distance >= threshold)
 		{
 			return i;
 		}
@@ -2041,7 +2017,7 @@ static __INLINE int GetThresholdPos(CALC_DISTANCE *arr, int len)
 }
 
 //希尔排序 
-void shell_sort(CALC_DISTANCE *arr, int len) 
+void shell_sort(CALC_DISTANCE *arr, unsigned int len) 
 {
 	int gap, i, j;
 	CALC_DISTANCE temp;

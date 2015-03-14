@@ -97,6 +97,13 @@ typedef struct CACL_PROJECTION_COUNT_S
 	signed char DPos[3];
 }CACL_PROJECTION_COUNT;
 
+typedef struct POS_USE_S
+{
+	unsigned int XPosUse[MAX_POINT];
+	unsigned int PosNum;
+	unsigned int YPosUse[MAX_POINT];
+}POS_USE;
+
 #ifndef  __CC_ARM
 typedef struct POINT_C_S
 {
@@ -229,7 +236,7 @@ void PrintDiamond(CALC_DIAMOND_BUF *DiamondBuf,char *OutBuf,int ScanCount);
 int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point);
 int GetMin(int* buf,int len,int *CurPos);
 void InsertSort(CALC_DISTANCE *a, int n);
-void shell_sort(CALC_DISTANCE *arr, int len) ;
+void shell_sort(CALC_DISTANCE *arr,unsigned int len) ;
 void DeleteAtDistance(CALC_DISTANCE *dis,int pos,unsigned int *len);
 static int CalcPointID(struct PT_BUF *point,int *num);
 void ExcDistance(CALC_DISTANCE *dis,int src,int dst);
