@@ -1802,9 +1802,10 @@ CALC_POINT_END:
 
 static int CalcPointID(struct PT_BUF *point,int* num)
 {
-	int i,j;
-	int min_pos,first;
-	int min_distance;
+	int i,j,k;
+	int first;
+	int min_distance,min_pos;
+	int min_distanceA,min_posA;
 	int distance_tem;
 	if (*num > MAX_POINT)
 	{
@@ -1838,8 +1839,13 @@ static int CalcPointID(struct PT_BUF *point,int* num)
 			}
 			g_PointStatus.LastPointUpTime[j]++;
 
+			if ((*num)<=0)
+			{
+				break;
+			}
 			first = 0;
 			min_distance = 0x0fffffff;
+			distance_tem = 0x1fffffff;
 			for (i=0;i<*num;i++)
 			{
 				if (point[i].id != 0)
@@ -1862,14 +1868,70 @@ static int CalcPointID(struct PT_BUF *point,int* num)
 				}
 
 			}
-			if (min_distance < DISTANCE_THRESHOLD_ID)	//找到了对应的点
+
+			first = 0;
+			min_distanceA = 0x0fffffff;
+			distance_tem = 0x1fffffff;
+			for (i=0;i<MAX_POINT;i++)
 			{
-				point[min_pos].id = g_PointStatus.LastPoint[j].id;
-				point[min_pos].tip = 1;
-				point[min_pos].valid = 1;
-				g_PointStatus.LastPoint[j] = point[min_pos];
-				g_PointStatus.LastPointUpTime[j] = 0;	//抬起次数清零
+				if (g_PointStatus.LastPoint[i].id == 0)
+				{
+					continue;
+				}
+				if (first == 0)
+				{
+					min_distanceA = CalclDistance_Short(&point[min_pos].pt_val, &g_PointStatus.LastPoint[i].pt_val);
+					min_posA = i;
+					first = 1;
+					continue;
+				}
+				distance_tem =  CalclDistance_Short(&point[min_pos].pt_val, &g_PointStatus.LastPoint[i].pt_val);
+				if (min_distanceA > distance_tem)
+				{
+					min_distanceA = distance_tem;
+					min_posA = i;
+				}
+				
 			}
+
+			if (min_posA == j)
+			{
+				if (min_distanceA < DISTANCE_THRESHOLD_ID)	//找到了对应的点
+				{
+					point[min_pos].id = g_PointStatus.LastPoint[j].id;
+					point[min_pos].tip = 1;
+					point[min_pos].valid = 1;
+					g_PointStatus.LastPoint[j] = point[min_pos];
+					g_PointStatus.LastPointUpTime[j] = 0;	//抬起次数清零
+				}
+			}
+			else
+			{
+				if (min_distanceA < min_distance)
+				{
+					if (min_distanceA < DISTANCE_THRESHOLD_ID)	//找到了对应的点
+					{
+						point[min_pos].id = g_PointStatus.LastPoint[min_posA].id;
+						point[min_pos].tip = 1;
+						point[min_pos].valid = 1;
+						g_PointStatus.LastPoint[min_posA] = point[min_pos];
+						g_PointStatus.LastPointUpTime[min_posA] = 0;	//抬起次数清零
+					}
+				}
+				else
+				{
+					if (min_distance < DISTANCE_THRESHOLD_ID)	//找到了对应的点
+					{
+						point[min_pos].id = g_PointStatus.LastPoint[j].id;
+						point[min_pos].tip = 1;
+						point[min_pos].valid = 1;
+						g_PointStatus.LastPoint[j] = point[min_pos];
+						g_PointStatus.LastPointUpTime[j] = 0;	//抬起次数清零
+					}
+				}
+
+			}
+
 		}
 
 		//看看是否有新点
