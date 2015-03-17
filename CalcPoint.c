@@ -12,9 +12,9 @@ void ClearPointID(void)
 }
 
 //获取当前小于距离阈值的位置
-static __INLINE int GetThresholdPos(CALC_DISTANCE *arr,unsigned int len,unsigned int threshold)
+static __INLINE signed int GetThresholdPos(CALC_DISTANCE *arr,unsigned int len,unsigned int threshold)
 {
-	int i = 0;
+	signed int i = 0;
 	for(i=0;i<len;i++)
 	{
 		if (arr[i].distance >= threshold)
@@ -25,7 +25,7 @@ static __INLINE int GetThresholdPos(CALC_DISTANCE *arr,unsigned int len,unsigned
 	return i;
 }
 //获取菱形中心点
-static __INLINE void CalclDiamondCentre(CALC_DIAMOND *a,CALC_POINT *b,int xOry,int index)
+static __INLINE void CalclDiamondCentre(CALC_DIAMOND *a,CALC_POINT *b,unsigned int xOry,unsigned int index)
 {
 	if(xOry == 0)
 	{
@@ -40,22 +40,38 @@ static __INLINE void CalclDiamondCentre(CALC_DIAMOND *a,CALC_POINT *b,int xOry,i
 
 }
 
+//获取菱形中心点
+static __INLINE void CalclDiamondCentreEdge(CALC_DIAMOND *a,CALC_POINT *b,unsigned int xOry,unsigned int index)
+{
+	if(xOry == 0)
+	{
+		b->x = CALCL_REL_TO_ABS(CALCL_X_DIAMOND_CENTRE_X_E(*a),index);
+		b->y = CALCL_X_DIAMOND_CENTRE_Y(*a);
+	}
+	else
+	{
+		b->x = CALCL_Y_DIAMOND_CENTRE_X(*a);
+		b->y = CALCL_REL_TO_ABS(CALCL_Y_DIAMOND_CENTRE_Y_E(*a),index);
+	}
+
+}
+
 //获取两点间距
 //为了节省计算量 不开平方 来表示点间距
-static __INLINE int CalclDistance(CALC_POINT *a,CALC_POINT *b)
+static __INLINE unsigned int CalclDistance(CALC_POINT *a,CALC_POINT *b)
 {
 	return CALCL_SQUAR((a->x) - (b->x)) + CALCL_SQUAR((a->y)-(b->y));
 }
 #ifndef  __CC_ARM
-static __INLINE int CalclDistance_Short(POINT_C *a,POINT_C *b)
+static __INLINE unsigned int CalclDistance_Short(POINT_C *a,POINT_C *b)
 #else
-static __INLINE int CalclDistance_Short(struct POINT *a,struct POINT *b)
+static __INLINE unsigned int CalclDistance_Short(struct POINT *a,struct POINT *b)
 #endif
 {
 	return CALCL_SQUAR((a->x) - (b->x)) + CALCL_SQUAR((a->y)-(b->y));
 }
 
-static __INLINE unsigned short  AdjustXRec_X (CALC_DIAMOND* p,int y0,char rec)
+static __INLINE unsigned short  AdjustXRec_X (CALC_DIAMOND* p,signed int y0,unsigned char rec)
 {
 	if ((((CALC_DIAMOND*)p)->strPoint0.y - ((CALC_DIAMOND*)p)->strPoint3.y) == 0)
 	{
@@ -63,7 +79,7 @@ static __INLINE unsigned short  AdjustXRec_X (CALC_DIAMOND* p,int y0,char rec)
 	}
 	return (unsigned short)CALCL_REL_TO_ABS(ADJUST_XREC_X_REL(p,y0),rec);
 }
-static __INLINE int  AdjustXRec_X_L (CALC_DIAMOND* p,int y0)
+static __INLINE int  AdjustXRec_X_L (CALC_DIAMOND* p,signed int y0)
 {
 	if ((((CALC_DIAMOND*)p)->strPoint0.y - ((CALC_DIAMOND*)p)->strPoint3.y) == 0)
 	{
@@ -72,7 +88,7 @@ static __INLINE int  AdjustXRec_X_L (CALC_DIAMOND* p,int y0)
 	return ADJUST_XREC_X_REL(p,y0);
 }
 
-static __INLINE unsigned short  AdjustYRec_Y(CALC_DIAMOND* p,int x0,char rec) 
+static __INLINE unsigned short  AdjustYRec_Y(CALC_DIAMOND* p,signed int x0,unsigned char rec) 
 {
 	if ((((CALC_DIAMOND*)p)->strPoint3.x - ((CALC_DIAMOND*)p)->strPoint0.x) == 0)
 	{
@@ -80,7 +96,7 @@ static __INLINE unsigned short  AdjustYRec_Y(CALC_DIAMOND* p,int x0,char rec)
 	}
 	return (unsigned short)CALCL_REL_TO_ABS(ADJUST_YREC_Y_REL(p,x0),rec);
 }
-static __INLINE int  AdjustYRec_Y_L(CALC_DIAMOND* p,int x0 ) 
+static __INLINE int  AdjustYRec_Y_L(CALC_DIAMOND* p,signed int x0 ) 
 {
 	if ((((CALC_DIAMOND*)p)->strPoint3.x - ((CALC_DIAMOND*)p)->strPoint0.x) == 0)
 	{
@@ -89,7 +105,7 @@ static __INLINE int  AdjustYRec_Y_L(CALC_DIAMOND* p,int x0 )
 	return ADJUST_YREC_Y_REL(p,x0);
 }
 
-static __INLINE void GetNumOne(signed char* dis,int k)  
+static __INLINE void GetNumOne(signed char* dis,signed int k)  
 {
 	while (k >0) 
 	{
@@ -97,7 +113,7 @@ static __INLINE void GetNumOne(signed char* dis,int k)
 		dis[k] = 1;
 	}
 }
-static __INLINE void ClearPos(CACL_PROJECTION_COUNT* dis,int k)  
+static __INLINE void ClearPos(CACL_PROJECTION_COUNT* dis,unsigned int k)  
 {
 
 	char tem ;
@@ -126,7 +142,7 @@ static __INLINE void ClearPos(CACL_PROJECTION_COUNT* dis,int k)
 //DiamondBuf: 菱形数据指针
 //OutBuf： 输出的buff
 //ScanCount: 当前数据编号
-void PrintDiamond(CALC_DIAMOND_BUF *DiamondBuf,char *OutBuf,int ScanCount)
+void PrintDiamond(CALC_DIAMOND_BUF *DiamondBuf,char *OutBuf,unsigned int ScanCount)
 {
 	unsigned int n=0;
 	unsigned int i,j;
@@ -253,7 +269,7 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 						DIAMOND_X_GET_P(DiamondBuf,i,j,1).x = DIAMOND_X_GET_P(DiamondBuf,i,j,0).x;
 						DIAMOND_X_GET_P(DiamondBuf,i,j,1).y = DIAMOND_X_GET_P(DiamondBuf,i,j,2).y;
 					}
-					CalclDiamondCentre(&(DiamondBuf->strXSquareDiamond[i].strDiamondPoint[j]),&XPoint[xDiamondNum].Point,0,i);
+					CalclDiamondCentreEdge(&(DiamondBuf->strXSquareDiamond[i].strDiamondPoint[j]),&XPoint[xDiamondNum].Point,0,i);
 				}
 				else	//矩形内的三角形
 				{
@@ -273,10 +289,17 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 					XPoint[xDiamondNum].Point.x = CALCL_REL_TO_ABS(XPoint[xDiamondNum].Point.x,i);
 				}
 			}
-			else
+			else	//菱形
 			{
-				//菱形
-				CalclDiamondCentre(&(DiamondBuf->strXSquareDiamond[i].strDiamondPoint[j]),&XPoint[xDiamondNum].Point,0,i);
+				if ((DIAMOND_X_GET_P(DiamondBuf,i,j,3).y ==0)&&(DIAMOND_X_GET_P(DiamondBuf,i,j,0).y ==TATAL_HEIGHT)) //边界菱形
+				{
+					CalclDiamondCentreEdge(&(DiamondBuf->strXSquareDiamond[i].strDiamondPoint[j]),&XPoint[xDiamondNum].Point,0,i);
+				}
+				else	//矩形内菱形
+				{
+					CalclDiamondCentre(&(DiamondBuf->strXSquareDiamond[i].strDiamondPoint[j]),&XPoint[xDiamondNum].Point,0,i);
+				}
+				
 			}
 			tmp = LENGTH_PRE;
 			if ((DIAMOND_X_GET_P(DiamondBuf,i,j,2).x > tmp)||((DIAMOND_X_GET_P(DiamondBuf,i,j,0).x==tmp)&&(DIAMOND_X_GET_P(DiamondBuf,i,j,3).x==tmp)))
@@ -348,9 +371,9 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 					else if(DIAMOND_Y_GET_P(DiamondBuf,i,j,1).y == DIAMOND_Y_GET_P(DiamondBuf,i,j,3).y)
 					{
 						DIAMOND_Y_GET_P(DiamondBuf,i,j,1).y = DIAMOND_Y_GET_P(DiamondBuf,i,j,0).y;
-						DIAMOND_Y_GET_P(DiamondBuf,i,j,1).x = DIAMOND_Y_GET_P(DiamondBuf,i,j,1).y;
+						DIAMOND_Y_GET_P(DiamondBuf,i,j,1).x = DIAMOND_Y_GET_P(DiamondBuf,i,j,1).x;
 					}
-					CalclDiamondCentre(&(DiamondBuf->strYSquareDiamond[i].strDiamondPoint[j]),&YPoint[yDiamondNum].Point,1,i);
+					CalclDiamondCentreEdge(&(DiamondBuf->strYSquareDiamond[i].strDiamondPoint[j]),&YPoint[yDiamondNum].Point,1,i);
 				}
 				else	//矩形内的三角形
 				{
@@ -369,10 +392,17 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 					YPoint[yDiamondNum].Point.y = CALCL_REL_TO_ABS(YPoint[yDiamondNum].Point.y,i);
 				}
 			}
-			else
+			else//菱形
 			{
-				//菱形
-				CalclDiamondCentre(&(DiamondBuf->strYSquareDiamond[i].strDiamondPoint[j]),&YPoint[yDiamondNum].Point,1,i);
+				if ((DIAMOND_Y_GET_P(DiamondBuf,i,j,3).x ==0)||(DIAMOND_Y_GET_P(DiamondBuf,i,j,0).x ==TOTAL_LENGTH))
+				{
+					CalclDiamondCentreEdge(&(DiamondBuf->strYSquareDiamond[i].strDiamondPoint[j]),&YPoint[yDiamondNum].Point,1,i);
+				}
+				else
+				{
+					CalclDiamondCentre(&(DiamondBuf->strYSquareDiamond[i].strDiamondPoint[j]),&YPoint[yDiamondNum].Point,1,i);
+				}
+				
 			}
 			tmp = LENGTH_PRE;
 			if ((DIAMOND_Y_GET_P(DiamondBuf,i,j,2).y > tmp)||((DIAMOND_Y_GET_P(DiamondBuf,i,j,0).y==tmp)&&(DIAMOND_Y_GET_P(DiamondBuf,i,j,3).y==tmp)))
@@ -1813,7 +1843,7 @@ CALC_POINT_END:
 	return PointNumTmp;
 }
 
-static int CalcPointID(struct PT_BUF *point,int* num)
+static signed int CalcPointID(struct PT_BUF *point,signed int* num)
 {
 	unsigned int i,j;
 	unsigned int NeedContiune;
@@ -1973,7 +2003,7 @@ DETECT_TOUCH_UP:
 }
 
 //交换distance数组里面两个数据
-void ExcDistance(CALC_DISTANCE *dis,int src,int dst)
+void ExcDistance(CALC_DISTANCE *dis,signed int src,signed int dst)
 {
 
 	CALC_DISTANCE dis_tmp;
@@ -1983,9 +2013,9 @@ void ExcDistance(CALC_DISTANCE *dis,int src,int dst)
 
 }
 
-void ForceDeleteAtDistance(CALC_DISTANCE *dis,int pos,int *len)
+void ForceDeleteAtDistance(CALC_DISTANCE *dis,unsigned int pos,signed int *len)
 {
-	int i;
+	signed int i;
 	CALC_DISTANCE dis_tmp;
 	if(pos>=(*len))
 		return;
@@ -1999,9 +2029,9 @@ void ForceDeleteAtDistance(CALC_DISTANCE *dis,int pos,int *len)
 	*len = i;
 }
 //删除distance数组里面某个值
-void DeleteAtDistance(CALC_DISTANCE *dis,int pos,unsigned int *len)
+void DeleteAtDistance(CALC_DISTANCE *dis,unsigned int pos,unsigned int *len)
 {
-	int i;
+	unsigned int i;
 	CALC_DISTANCE dis_tmp;
 	if(pos>=(*len))
 		return;
@@ -2018,7 +2048,7 @@ void DeleteAtDistance(CALC_DISTANCE *dis,int pos,unsigned int *len)
 //希尔排序 
 void shell_sort(CALC_DISTANCE *arr, unsigned int len) 
 {
-	int gap, i, j;
+	signed int gap, i, j;
 	CALC_DISTANCE temp;
 	for (gap = len >> 1; gap > 0; gap >>= 1)
 	{
@@ -2032,61 +2062,3 @@ void shell_sort(CALC_DISTANCE *arr, unsigned int len)
 	}
 }
 
-//插入排序法
-void InsertSort(CALC_DISTANCE *a , int n)
-{  
-	int i,j;
-	int ThresholdPos = 0;
-	CALC_DISTANCE x;
-	if(n <= 1)	//只有1个元素时没有办法排序
-		return;
-	if(a == NULL)
-		return;
-
-	for(i= 1; i<n; i++)
-	{  
-		if(a[i].distance < a[i-1].distance)	//若第i个元素大于i-1元素，直接插入。小于的话，移动有序表后插入  
-		{               
-			j= i-1;   
-			x = a[i];        //复制为哨兵，即存储待排序元素  
-			a[i] = a[i-1];           //先后移一个元素  
-			while((j > 0) && (x.distance < a[j].distance))	//查找在有序表的插入位置  
-			{  
-				a[j+1] = a[j];  
-				j--;         //元素后移  
-			}  
-			a[j+1] = x;      //插入到正确位置  
-		}  
-	}  
-
-}
-
-//int数组求和
-static __INLINE int sum(int *a,int len)
-{
-	int i;
-	int sum = 0;
-	for(i=0;i<len;i++)
-		sum += a[i];
-	return sum;
-}
-//获取一个int类型 buff中的最小值
-int GetMin(int* buf,int len,int *CurPos)
-{
-	int i;
-	int min ;
-	if((len==0)||(buf == 0))
-		return 0;
-	min = buf[0];
-	*CurPos = 0;
-	for (i = 0;i<len;i++)
-	{
-		if (buf[i]< min)
-		{
-			min = buf[i];
-			*CurPos = i;
-		}
-	}
-	return min;
-}
- 

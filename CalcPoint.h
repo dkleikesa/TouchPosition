@@ -73,7 +73,7 @@ typedef struct CALC_DIAMOND_BUF_S
 //计算中心间距的结构体
 typedef struct CALC_DISTANCE_S
 {
-	signed int distance;
+	unsigned int distance;
 	unsigned char XPos;
 	unsigned char YPos;
 }CALC_DISTANCE;
@@ -133,9 +133,11 @@ typedef struct PT_STATUS_L_S
 
 #define CALCL_AVERAGE_TWO(a,b) ((int)(((int)(a)+(int)(b))/2))
 #define CALCL_X_DIAMOND_CENTRE_X(a) CALCL_AVERAGE_TWO((a).strPoint0.x,((a)).strPoint3.x)
+#define CALCL_X_DIAMOND_CENTRE_X_E(a) CALCL_AVERAGE_TWO((a).strPoint1.x,((a)).strPoint2.x)
 #define CALCL_X_DIAMOND_CENTRE_Y(a) CALCL_AVERAGE_TWO(((a)).strPoint1.y,((a)).strPoint2.y)
 #define CALCL_Y_DIAMOND_CENTRE_X(a) CALCL_AVERAGE_TWO((a).strPoint1.x,((a)).strPoint2.x)
 #define CALCL_Y_DIAMOND_CENTRE_Y(a) CALCL_AVERAGE_TWO(((a)).strPoint0.y,((a)).strPoint3.y)
+#define CALCL_Y_DIAMOND_CENTRE_Y_E(a) CALCL_AVERAGE_TWO(((a)).strPoint1.y,((a)).strPoint2.y)
 
 #define CALCL_REL_TO_ABS(a,b) ((a)+(b)*128)		
 
@@ -234,13 +236,11 @@ for(m=PointNumTmp;m< PointNumTmp_t;m++)	\
 
 void PrintDiamond(CALC_DIAMOND_BUF *DiamondBuf,char *OutBuf,int ScanCount);
 int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point);
-int GetMin(int* buf,int len,int *CurPos);
-void InsertSort(CALC_DISTANCE *a, int n);
 void shell_sort(CALC_DISTANCE *arr,unsigned int len) ;
-void DeleteAtDistance(CALC_DISTANCE *dis,int pos,unsigned int *len);
-static int CalcPointID(struct PT_BUF *point,int *num);
-void ExcDistance(CALC_DISTANCE *dis,int src,int dst);
-void ForceDeleteAtDistance(CALC_DISTANCE *dis,int pos,int *len);
+void DeleteAtDistance(CALC_DISTANCE *dis,unsigned int pos,unsigned int *len);
+static signed int CalcPointID(struct PT_BUF *point,signed int *num);
+void ExcDistance(CALC_DISTANCE *dis,signed int src,signed int dst);
+void ForceDeleteAtDistance(CALC_DISTANCE *dis,unsigned int pos,signed int *len);
 void ClearPointID(void);
 extern PT_STATUS_L g_PointStatus;
 
