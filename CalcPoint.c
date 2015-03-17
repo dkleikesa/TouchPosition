@@ -11,6 +11,19 @@ void ClearPointID(void)
 	memset(&g_PointStatus,0,sizeof(PT_STATUS_L));
 }
 
+//获取当前小于距离阈值的位置
+static __INLINE int GetThresholdPos(CALC_DISTANCE *arr,unsigned int len,unsigned int threshold)
+{
+	int i = 0;
+	for(i=0;i<len;i++)
+	{
+		if (arr[i].distance >= threshold)
+		{
+			return i;
+		}
+	}
+	return i;
+}
 //获取菱形中心点
 static __INLINE void CalclDiamondCentre(CALC_DIAMOND *a,CALC_POINT *b,int xOry,int index)
 {
@@ -76,7 +89,7 @@ static __INLINE int  AdjustYRec_Y_L(CALC_DIAMOND* p,int x0 )
 	return ADJUST_YREC_Y_REL(p,x0);
 }
 
-static __INLINE void GetNumOne(char* dis,int k)  
+static __INLINE void GetNumOne(signed char* dis,int k)  
 {
 	while (k >0) 
 	{
@@ -1802,7 +1815,7 @@ CALC_POINT_END:
 
 static int CalcPointID(struct PT_BUF *point,int* num)
 {
-	unsigned int i,j,k;
+	unsigned int i,j;
 	unsigned int NeedContiune;
 
 	unsigned int DistanceNUM;
@@ -2000,20 +2013,6 @@ void DeleteAtDistance(CALC_DISTANCE *dis,int pos,unsigned int *len)
 	}
 	dis[i] = dis_tmp;
 	*len = i;
-}
-
-//获取当前小于距离阈值的位置
-static __INLINE int GetThresholdPos(CALC_DISTANCE *arr,unsigned int len,unsigned int threshold)
-{
-	int i = 0;
-	for(i=0;i<len;i++)
-	{
-		if (arr[i].distance >= threshold)
-		{
-			return i;
-		}
-	}
-	return i;
 }
 
 //希尔排序 

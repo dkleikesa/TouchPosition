@@ -242,6 +242,6 @@ static int CalcPointID(struct PT_BUF *point,int *num);
 void ExcDistance(CALC_DISTANCE *dis,int src,int dst);
 void ForceDeleteAtDistance(CALC_DISTANCE *dis,int pos,int *len);
 void ClearPointID(void);
-extern PT_STATUS_L g_PointStatus;	
+extern PT_STATUS_L g_PointStatus;
 
 #endif
