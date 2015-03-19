@@ -299,7 +299,7 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 				{
 					CalclDiamondCentre(&(DiamondBuf->strXSquareDiamond[i].strDiamondPoint[j]),&XPoint[xDiamondNum].Point,0,i);
 				}
-				
+
 			}
 			tmp = LENGTH_PRE;
 			if ((DIAMOND_X_GET_P(DiamondBuf,i,j,2).x > tmp)||((DIAMOND_X_GET_P(DiamondBuf,i,j,0).x==tmp)&&(DIAMOND_X_GET_P(DiamondBuf,i,j,3).x==tmp)))
@@ -402,7 +402,7 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 				{
 					CalclDiamondCentre(&(DiamondBuf->strYSquareDiamond[i].strDiamondPoint[j]),&YPoint[yDiamondNum].Point,1,i);
 				}
-				
+
 			}
 			tmp = LENGTH_PRE;
 			if ((DIAMOND_Y_GET_P(DiamondBuf,i,j,2).y > tmp)||((DIAMOND_Y_GET_P(DiamondBuf,i,j,0).y==tmp)&&(DIAMOND_Y_GET_P(DiamondBuf,i,j,3).y==tmp)))
@@ -581,7 +581,7 @@ RESTART_LESS:
 	}
 	PointNumTmp_t = PointNumTmp;
 
-//goto COPY_POINT;
+	//goto COPY_POINT;
 	for(i = 0;i < SCAN_X_SQUARE_NUM; i++)  
 	{
 		if(xPointNum[i] ==0)	//没有点 略过
@@ -1170,7 +1170,7 @@ RESTART_LESS:
 
 	//可能存在边界点，菱形细长，需要特殊处理
 	if (PointNumTmp < PointNum)
-	//	if (PointNumTmp < 0)
+		//	if (PointNumTmp < 0)
 	{
 		for(i = PointNumTmp;i < disNUM_f; i++)
 		{	
@@ -1865,94 +1865,65 @@ static signed int CalcPointID(struct PT_BUF *point,signed int* num)
 	{
 		point[i].id = 0;
 	}
-	//第一次触摸开始
-	if (g_PointStatus.ulLastPointNum == 0)
+
+	for (j=0;j<MAX_POINT;j++)	//所有点 抬起一次
 	{
+		if (g_PointStatus.LastPoint[j].id == 0)
+		{
+			continue;
+		}
+		g_PointStatus.LastPointUpTime[j]++;
+	}
+	if ((*num)<=0)
+	{
+		goto DETECT_TOUCH_UP;
+	}
+	for (j=0;j<MAX_POINT;j++)
+	{
+		if (g_PointStatus.LastPoint[j].id == 0)
+		{
+			continue;
+		}
 		for (i=0;i<*num;i++)
 		{
-			point[i].id = i+1;
-			point[i].tip = 1;
-			point[i].valid = 1;
-			g_PointStatus.LastPoint[i] = point[i];
+			DistanceTmp[DistanceNUM].distance = CalclDistance_Short(&point[i].pt_val, &g_PointStatus.LastPoint[j].pt_val);
+			DistanceTmp[DistanceNUM].XPos = j;	
+			DistanceTmp[DistanceNUM].YPos = i;
+			DistanceNUM++;
 		}
-		g_PointStatus.ulLastPointNum = *num;
-		return 0;
 	}
-	if (g_PointStatus.ulLastPointNum > 0)
+
+	shell_sort(DistanceTmp , DistanceNUM); 
+	DistanceNUM_t = GetThresholdPos(DistanceTmp,DistanceNUM,DISTANCE_THRESHOLD_ID);
+
+	for (i = 0;i<DistanceNUM_t;i++)
 	{
-		for (j=0;j<MAX_POINT;j++)	//所有点 抬起一次
+		NeedContiune = 0;
+
+		for (j=0;j<PosUse.PosNum;j++)
 		{
-			if (g_PointStatus.LastPoint[j].id == 0)
+			if ((DistanceTmp[i].XPos ==PosUse.XPosUse[j])||
+				(DistanceTmp[i].YPos ==PosUse.YPosUse[j]))
 			{
-				continue;
-			}
-			g_PointStatus.LastPointUpTime[j]++;
-		}
-		if ((*num)<=0)
-		{
-			goto DETECT_TOUCH_UP;
-		}
-		for (j=0;j<MAX_POINT;j++)
-		{
-			if (g_PointStatus.LastPoint[j].id == 0)
-			{
-				continue;
-			}
-			for (i=0;i<*num;i++)
-			{
-				DistanceTmp[DistanceNUM].distance = CalclDistance_Short(&point[i].pt_val, &g_PointStatus.LastPoint[j].pt_val);
-				DistanceTmp[DistanceNUM].XPos = j;	
-				DistanceTmp[DistanceNUM].YPos = i;
-				DistanceNUM++;
+				NeedContiune =1;
+				break;
 			}
 		}
 
-		shell_sort(DistanceTmp , DistanceNUM); 
-		DistanceNUM_t = GetThresholdPos(DistanceTmp,DistanceNUM,DISTANCE_THRESHOLD_ID);
-
-		for (i = 0;i<DistanceNUM_t;i++)
+		if (NeedContiune == 1)
 		{
-			//if (i == 0)
-			//{
-			//	point[DistanceTmp[0].YPos].id = g_PointStatus.LastPoint[DistanceTmp[0].XPos].id;
-			//	point[DistanceTmp[0].YPos].tip = 1;
-			//	point[DistanceTmp[0].YPos].valid = 1;
-			//	g_PointStatus.LastPoint[DistanceTmp[0].XPos] = point[DistanceTmp[0].YPos];
-			//	g_PointStatus.LastPointUpTime[DistanceTmp[0].XPos] = 0;	//抬起次数清零
-			//	PosUse.XPosUse[0]=DistanceTmp[0].XPos;
-			//	PosUse.YPosUse[0]=DistanceTmp[0].YPos;
-			//	PosUse.PosNum=1;
-			//	continue;
-			//}
-			NeedContiune = 0;
-
-			for (j=0;j<PosUse.PosNum;j++)
-			{
-				if ((DistanceTmp[i].XPos ==PosUse.XPosUse[j])||
-					(DistanceTmp[i].YPos ==PosUse.YPosUse[j]))
-				{
-					NeedContiune =1;
-					break;
-				}
-			}
-
-			if (NeedContiune == 1)
-			{
-				continue;
-			}
-
-			point[DistanceTmp[i].YPos].id = g_PointStatus.LastPoint[DistanceTmp[i].XPos].id;
-			point[DistanceTmp[i].YPos].tip = 1;
-			point[DistanceTmp[i].YPos].valid = 1;
-			g_PointStatus.LastPoint[DistanceTmp[i].XPos] = point[DistanceTmp[i].YPos];
-			g_PointStatus.LastPointUpTime[DistanceTmp[i].XPos] = 0;	//抬起次数清零
-			PosUse.XPosUse[PosUse.PosNum]=DistanceTmp[i].XPos;
-			PosUse.YPosUse[PosUse.PosNum]=DistanceTmp[i].YPos;
-			PosUse.PosNum++;
-		
-
+			continue;
 		}
-	
+
+		point[DistanceTmp[i].YPos].id = g_PointStatus.LastPoint[DistanceTmp[i].XPos].id;
+		point[DistanceTmp[i].YPos].tip = 1;
+		point[DistanceTmp[i].YPos].valid = 1;
+		g_PointStatus.LastPoint[DistanceTmp[i].XPos] = point[DistanceTmp[i].YPos];
+		g_PointStatus.LastPointUpTime[DistanceTmp[i].XPos] = 0;	//抬起次数清零
+		PosUse.XPosUse[PosUse.PosNum]=DistanceTmp[i].XPos;
+		PosUse.YPosUse[PosUse.PosNum]=DistanceTmp[i].YPos;
+		PosUse.PosNum++;
+	}
 	//看看是否有新点	
 DETECT_NEW_POINT:
 	for (i=0;i<*num;i++)
@@ -1978,26 +1949,24 @@ DETECT_NEW_POINT:
 	}
 
 DETECT_TOUCH_UP:
-		//检测是不是有的点已经多次没有数据 如果没有数据，那就把这个点发送一次抬起事件
-		for (j=0;j<MAX_POINT;j++)
+	//检测是不是有的点已经多次没有数据 如果没有数据，那就把这个点发送一次抬起事件
+	for (j=0;j<MAX_POINT;j++)
+	{
+		if (g_PointStatus.LastPoint[j].id == 0)
 		{
-			if (g_PointStatus.LastPoint[j].id == 0)
-			{
-				continue;
-			}
-			if (g_PointStatus.LastPointUpTime[j] >= TIMES_THRESHOLD_UP)
-			{
-				g_PointStatus.LastPoint[j].tip = 0;
-				point[*num] = g_PointStatus.LastPoint[j];
-				(*num) ++;
-				g_PointStatus.LastPointUpTime[j] = 0;
-				g_PointStatus.LastPoint[j].id=0;
-				g_PointStatus.ulLastPointNum--;
-			}
+			continue;
 		}
-
-
+		if (g_PointStatus.LastPointUpTime[j] >= TIMES_THRESHOLD_UP)
+		{
+			g_PointStatus.LastPoint[j].tip = 0;
+			point[*num] = g_PointStatus.LastPoint[j];
+			(*num) ++;
+			g_PointStatus.LastPointUpTime[j] = 0;
+			g_PointStatus.LastPoint[j].id=0;
+			g_PointStatus.ulLastPointNum--;
+		}
 	}
+
 	PRINTFF ("ulLastPointNum=%d \r\n",g_PointStatus.ulLastPointNum);
 	return 0;
 }
