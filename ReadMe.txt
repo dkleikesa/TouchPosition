@@ -85,3 +85,5 @@ TouchPosition.manifest
 8.边界时候菱形划归到一个矩形里面，会出现有投影但是没有菱形的情况，造成点个数误判
 
 YProjectionCount[i].pos[0]
+
+1.菱形中心点位置计算 换4个点求平均值 或者都用P1 P2点来计算 试试

@@ -12,7 +12,8 @@
 #define PRINTFF
 #endif
 
-#define MAX_POINT	5		//最大支持点数
+#define MAX_POINT 5		//最大支持点数
+#define MAX_POINT_C MAX_POINT*2	//计算点ID时候的缓存个数
 #define MAX_POINT_REC 3	//每个矩形里面 支持的最大点数
 
 #define SCAN_X_SQUARE_NUM	5
@@ -99,9 +100,9 @@ typedef struct CACL_PROJECTION_COUNT_S
 
 typedef struct POS_USE_S
 {
-	unsigned int XPosUse[MAX_POINT];
+	unsigned int XPosUse[MAX_POINT_C];
 	unsigned int PosNum;
-	unsigned int YPosUse[MAX_POINT];
+	unsigned int YPosUse[MAX_POINT_C];
 }POS_USE;
 
 #ifndef  __CC_ARM
@@ -123,8 +124,8 @@ struct PT_BUF
 typedef struct PT_STATUS_L_S
 {
 	unsigned int ulLastPointNum;              /*实点状态0、1、2、3。。。*/
-	struct PT_BUF LastPoint[MAX_POINT];   /*上次的实点信息*/
-	char LastPointUpTime[MAX_POINT];	/*此点已经多少次没有扫描到信息*/
+	struct PT_BUF LastPoint[MAX_POINT_C];   /*上次的实点信息*/
+	char LastPointUpTime[MAX_POINT_C];	/*此点已经多少次没有扫描到信息*/
 }PT_STATUS_L;
 
 #ifndef  __CC_ARM

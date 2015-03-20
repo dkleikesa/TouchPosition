@@ -979,7 +979,15 @@ SHOW_CALC_POINTTT:
 	{
 		poi.x =point[i].pt_val.x;
 		poi.y =point[i].pt_val.y;
-		DrawPoint(&poi,bmp,graphics,point[i].id - 1);
+		if(point[i].id == 0)
+		{
+			printf("Point ID = 0");
+			DrawPoint(&poi,bmp,graphics,point[i].id - 1);
+		}
+		else
+		{
+			DrawPoint(&poi,bmp,graphics,point[i].id - 1);
+		}
 		if (point[i].tip == 0)
 		{
 			printf("Point UP");

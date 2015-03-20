@@ -1781,6 +1781,10 @@ RESTART_MORE:
 	{
 
 	}
+	if (PointNumTmp > MAX_POINT)
+	{
+		PointNumTmp = MAX_POINT;
+	}
 COPY_POINT:
 	//返回所有有效值
 	PRINTFF("Last PointNumTmp=%d\r\n",PointNumTmp);
@@ -1850,7 +1854,7 @@ static signed int CalcPointID(struct PT_BUF *point,signed int* num)
 
 	unsigned int DistanceNUM;
 	unsigned int DistanceNUM_t;
-	CALC_DISTANCE DistanceTmp[MAX_POINT*MAX_POINT];
+	CALC_DISTANCE DistanceTmp[MAX_POINT_C*MAX_POINT];
 	POS_USE PosUse;
 
 	DistanceNUM = 0;
@@ -1866,7 +1870,7 @@ static signed int CalcPointID(struct PT_BUF *point,signed int* num)
 		point[i].id = 0;
 	}
 
-	for (j=0;j<MAX_POINT;j++)	//所有点 抬起一次
+	for (j=0;j<MAX_POINT_C;j++)	//所有点 抬起一次
 	{
 		if (g_PointStatus.LastPoint[j].id == 0)
 		{
@@ -1878,7 +1882,7 @@ static signed int CalcPointID(struct PT_BUF *point,signed int* num)
 	{
 		goto DETECT_TOUCH_UP;
 	}
-	for (j=0;j<MAX_POINT;j++)
+	for (j=0;j<MAX_POINT_C;j++)
 	{
 		if (g_PointStatus.LastPoint[j].id == 0)
 		{
@@ -1892,7 +1896,10 @@ static signed int CalcPointID(struct PT_BUF *point,signed int* num)
 			DistanceNUM++;
 		}
 	}
-
+	if ( DistanceNUM == 0)
+	{
+		goto DETECT_NEW_POINT;
+	}
 	shell_sort(DistanceTmp , DistanceNUM); 
 	DistanceNUM_t = GetThresholdPos(DistanceTmp,DistanceNUM,DISTANCE_THRESHOLD_ID);
 
@@ -1932,7 +1939,7 @@ DETECT_NEW_POINT:
 		{
 			continue;
 		}
-		for (j=0; j<MAX_POINT;j++)
+		for (j=0; j<MAX_POINT_C;j++)
 		{
 			if (g_PointStatus.LastPoint[j].id != 0)
 			{
@@ -1950,7 +1957,7 @@ DETECT_NEW_POINT:
 
 DETECT_TOUCH_UP:
 	//检测是不是有的点已经多次没有数据 如果没有数据，那就把这个点发送一次抬起事件
-	for (j=0;j<MAX_POINT;j++)
+	for (j=0;j<MAX_POINT_C;j++)
 	{
 		if (g_PointStatus.LastPoint[j].id == 0)
 		{
