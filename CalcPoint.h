@@ -1,7 +1,7 @@
 #ifndef __CALC_POINT__
 #define __CALC_POINT__
 
-
+#include <stdio.h>
 #include <math.h>
 
 #define __INLINE __inline 
@@ -13,7 +13,7 @@
 #endif
 
 #define MAX_POINT 5		//最大支持点数
-#define MAX_POINT_C MAX_POINT*2	//计算点ID时候的缓存个数
+#define MAX_POINT_C MAX_POINT*3	//计算点ID时候的缓存个数
 #define MAX_POINT_REC 3	//每个矩形里面 支持的最大点数
 
 #define SCAN_X_SQUARE_NUM	5
@@ -235,7 +235,7 @@ for(m=PointNumTmp;m< PointNumTmp_t;m++)	\
 }	\
 }
 
-void PrintDiamond(CALC_DIAMOND_BUF *DiamondBuf,char *OutBuf,int ScanCount);
+void PrintDiamond(CALC_DIAMOND_BUF *DiamondBuf,char *OutBuf,unsigned int ScanCount);
 int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point);
 void shell_sort(CALC_DISTANCE *arr,unsigned int len) ;
 void DeleteAtDistance(CALC_DISTANCE *dis,unsigned int pos,unsigned int *len);

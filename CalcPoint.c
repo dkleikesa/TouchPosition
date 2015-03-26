@@ -1869,7 +1869,7 @@ static signed int CalcPointID(struct PT_BUF *point,signed int* num)
 	{
 		point[i].id = 0;
 	}
-
+	
 	for (j=0;j<MAX_POINT_C;j++)	//所有点 抬起一次
 	{
 		if (g_PointStatus.LastPoint[j].id == 0)
@@ -1930,7 +1930,9 @@ static signed int CalcPointID(struct PT_BUF *point,signed int* num)
 		PosUse.XPosUse[PosUse.PosNum]=DistanceTmp[i].XPos;
 		PosUse.YPosUse[PosUse.PosNum]=DistanceTmp[i].YPos;
 		PosUse.PosNum++;
+		printf("find old point id=%d x=%d y=%d\r\n",point[DistanceTmp[i].YPos].id,point[DistanceTmp[i].YPos].pt_val.x,point[DistanceTmp[i].YPos].pt_val.y);
 	}
+	
 	//看看是否有新点	
 DETECT_NEW_POINT:
 	for (i=0;i<*num;i++)
@@ -1951,6 +1953,7 @@ DETECT_NEW_POINT:
 			g_PointStatus.LastPoint[j] = point[i];
 			g_PointStatus.ulLastPointNum++ ;
 			g_PointStatus.LastPointUpTime[j] = 0;	//抬起次数清零
+			printf("find new point id=%d x=%d y=%d\r\n",point[i].id,point[i].pt_val.x,point[i].pt_val.y);
 			break;
 		}
 	}
@@ -1965,15 +1968,18 @@ DETECT_TOUCH_UP:
 		}
 		if (g_PointStatus.LastPointUpTime[j] >= TIMES_THRESHOLD_UP)
 		{
+				printf("point touch up id=%d x=%d y=%d num=%d\r\n",g_PointStatus.LastPoint[j].id,g_PointStatus.LastPoint[j].pt_val.x,g_PointStatus.LastPoint[j].pt_val.y,*num);
 			g_PointStatus.LastPoint[j].tip = 0;
 			point[*num] = g_PointStatus.LastPoint[j];
 			(*num) ++;
 			g_PointStatus.LastPointUpTime[j] = 0;
 			g_PointStatus.LastPoint[j].id=0;
 			g_PointStatus.ulLastPointNum--;
+			
+		
 		}
 	}
-
+	//printf ("\r\n");
 	PRINTFF ("ulLastPointNum=%d \r\n",g_PointStatus.ulLastPointNum);
 	return 0;
 }
