@@ -1174,22 +1174,26 @@ RESTART_LESS:
 	{
 		for(i = PointNumTmp;i < disNUM_f; i++)
 		{	
-			//PRINTFF("X ratio = %d \r\n",DIAMON_WRH_X(DIAMOND_X_GET_D(DiamondBuf,XPoint[DistanceTmp[i].XPos].Rec,XPoint[DistanceTmp[i].XPos].Diamond)));
+			PRINTFF("X ratio = %d \r\n",DIAMON_WRH_X(DIAMOND_X_GET_D(DiamondBuf,XPoint[DistanceTmp[i].XPos].Rec,XPoint[DistanceTmp[i].XPos].Diamond)));
 			if(DIAMON_WRH_X(DIAMOND_X_GET_D(DiamondBuf,XPoint[DistanceTmp[i].XPos].Rec,XPoint[DistanceTmp[i].XPos].Diamond))>=DIAMON_RATIO)
 			{
 				//PRINTFF("X new point %d\r\n",(XPoint[DistanceTmp[i].XPos].Point.x - YPoint[DistanceTmp[i].YPos].Point.x));
-				if (abs(XPoint[DistanceTmp[i].XPos].Point.x - YPoint[DistanceTmp[i].YPos].Point.x) <= LONG_DIA_THRESHOLD)
+				if ((abs(XPoint[DistanceTmp[i].XPos].Point.x - YPoint[DistanceTmp[i].YPos].Point.x) <= LONG_DIA_THRESHOLD) &&
+					(YPoint[DistanceTmp[i].YPos].Point.y <=DIAMOND_X_GET_D(DiamondBuf,XPoint[DistanceTmp[i].XPos].Rec,XPoint[DistanceTmp[i].XPos].Diamond).strPoint0.y)&&
+					(YPoint[DistanceTmp[i].YPos].Point.y >=DIAMOND_X_GET_D(DiamondBuf,XPoint[DistanceTmp[i].XPos].Rec,XPoint[DistanceTmp[i].XPos].Diamond).strPoint3.y))
 				{
 					PRINTFF("X new point\r\n");
 					ExcDistance(DistanceTmp,PointNumTmp,i);
 					PointNumTmp++;
 				}
 			}
-			//PRINTFF("Y ratio = %d \r\n",DIAMON_WRH_Y(DIAMOND_Y_GET_D(DiamondBuf,YPoint[DistanceTmp[i].YPos].Rec,YPoint[DistanceTmp[i].YPos].Diamond)));
+			PRINTFF("Y ratio = %d \r\n",DIAMON_WRH_Y(DIAMOND_Y_GET_D(DiamondBuf,YPoint[DistanceTmp[i].YPos].Rec,YPoint[DistanceTmp[i].YPos].Diamond)));
 			if(DIAMON_WRH_Y(DIAMOND_Y_GET_D(DiamondBuf,YPoint[DistanceTmp[i].YPos].Rec,YPoint[DistanceTmp[i].YPos].Diamond))>=DIAMON_RATIO)
 			{
 				//PRINTFF("Y new point %d\r\n",(XPoint[DistanceTmp[i].XPos].Point.y - YPoint[DistanceTmp[i].YPos].Point.y));
-				if (abs(XPoint[DistanceTmp[i].XPos].Point.y - YPoint[DistanceTmp[i].YPos].Point.y) <= LONG_DIA_THRESHOLD)
+				if ((abs(XPoint[DistanceTmp[i].XPos].Point.y - YPoint[DistanceTmp[i].YPos].Point.y) <= LONG_DIA_THRESHOLD)&&
+					(YPoint[DistanceTmp[i].YPos].Point.x <= DIAMOND_Y_GET_D(DiamondBuf,YPoint[DistanceTmp[i].YPos].Rec,YPoint[DistanceTmp[i].YPos].Diamond).strPoint0.x)&&
+					(YPoint[DistanceTmp[i].YPos].Point.x >= DIAMOND_Y_GET_D(DiamondBuf,YPoint[DistanceTmp[i].YPos].Rec,YPoint[DistanceTmp[i].YPos].Diamond).strPoint3.x))
 				{
 					PRINTFF("Y new point\r\n");
 					ExcDistance(DistanceTmp,PointNumTmp,i);
@@ -1198,7 +1202,7 @@ RESTART_LESS:
 			}
 		}
 		PointNumTmp_t = PointNumTmp;
-		//#if 1
+
 RESTART_MORE:
 		for(i = 0;i < SCAN_X_SQUARE_NUM; i++)  
 		{
@@ -1379,7 +1383,7 @@ RESTART_MORE:
 				}
 			}
 		}
-#if 1
+
 		for(i = 0;i < SCAN_Y_SQUARE_NUM; i++) 
 		{
 			if(yPointNum[i] ==0)
@@ -1553,7 +1557,7 @@ RESTART_MORE:
 				}
 			}
 		}
-
+#if 1
 		//如果还少。。。
 		if (PointNumTmp < PointNum)
 			//	if (PointNumTmp < 0)

@@ -518,10 +518,10 @@ void CTouchPositionDlg::ReDrawWindow(void)
 		m_Rect_BitWindow.right = rect.right - LIST_SELECT_WIDTH_THREE - 5 - 5; 
 	}
 	m_Rect_BitWindow.bottom = rect.bottom-EDIT_ONE_HEIGHT - 5 - 10;
-	if ((m_Rect_BitWindow.bottom *640/456) <= m_Rect_BitWindow.right ) 
-		m_Rect_BitWindow.right = m_Rect_BitWindow.bottom *640/456;
+	if ((m_Rect_BitWindow.bottom *WB_WIDTH/WB_HEIGH) <= m_Rect_BitWindow.right ) 
+		m_Rect_BitWindow.right = m_Rect_BitWindow.bottom *WB_WIDTH/WB_HEIGH;
 	else
-		m_Rect_BitWindow.bottom = m_Rect_BitWindow.right*456/640;
+		m_Rect_BitWindow.bottom = m_Rect_BitWindow.right*WB_HEIGH/WB_WIDTH;
 
 	pWnd = this->GetDlgItem(IDC_STATIC_STATUS);
 	if(pWnd != NULL )

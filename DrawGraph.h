@@ -8,6 +8,11 @@ extern "C"
 #define POINT_SIZE_FINALLY			8		//已识别点的大小
 #define POINT_SIZE_DIAMOND			6		//菱形定点的大小
 
+#define EDGE_WIDTH		8
+#define WB_HEIGH		(456 + EDGE_WIDTH*2)
+#define WB_WIDTH		(640 + EDGE_WIDTH*2)
+
+
 class CTouchPositionDlg;
 
 class DrawGraph

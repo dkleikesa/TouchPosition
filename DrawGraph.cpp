@@ -177,18 +177,18 @@ void DrawGraph::DrawTrack_Two( Bitmap* bmp, Graphics* graphics)
 					{
 						point1_last = 0;
 						point1[point1_idx].X =(REAL)( ((buf[8+j*5]&0xff)|((buf[7+j*5]<<8)&0x0000ff00))-1);
-						point1[point1_idx].Y =(REAL)( 456 - ((buf[10+j*5]&0xff)|((buf[9+j*5]<<8)&0x0000ff00)));
-						point1[point1_idx].X = (point1[point1_idx].X*m_pDlg->m_Rect_BitWindow.Width()*m_pDlg->m_fMakeBig/640) ;
-						point1[point1_idx].Y = (point1[point1_idx].Y*m_pDlg->m_Rect_BitWindow.Height()* m_pDlg->m_fMakeBig/456) ;
+						point1[point1_idx].Y =(REAL)( WB_HEIGH - ((buf[10+j*5]&0xff)|((buf[9+j*5]<<8)&0x0000ff00)));
+						point1[point1_idx].X = (point1[point1_idx].X*m_pDlg->m_Rect_BitWindow.Width()*m_pDlg->m_fMakeBig/WB_WIDTH) ;
+						point1[point1_idx].Y = (point1[point1_idx].Y*m_pDlg->m_Rect_BitWindow.Height()* m_pDlg->m_fMakeBig/WB_HEIGH) ;
 						point1_idx++;
 					}
 					else
 					{
 						point2_last = 0;
 						point2[point2_idx].X = (REAL)(((buf[8+j*5]&0xff)|((buf[7+j*5]<<8)&0x0000ff00))-1);
-						point2[point2_idx].Y = (REAL)(456 - ((buf[10+j*5]&0xff)|((buf[9+j*5]<<8)&0x0000ff00)));
-						point2[point2_idx].X = (point2[point2_idx].X*m_pDlg->m_Rect_BitWindow.Width()*m_pDlg->m_fMakeBig/640) ;
-						point2[point2_idx].Y = (point2[point2_idx].Y*m_pDlg->m_Rect_BitWindow.Height()* m_pDlg->m_fMakeBig/456) ;
+						point2[point2_idx].Y = (REAL)(WB_HEIGH - ((buf[10+j*5]&0xff)|((buf[9+j*5]<<8)&0x0000ff00)));
+						point2[point2_idx].X = (point2[point2_idx].X*m_pDlg->m_Rect_BitWindow.Width()*m_pDlg->m_fMakeBig/WB_WIDTH) ;
+						point2[point2_idx].Y = (point2[point2_idx].Y*m_pDlg->m_Rect_BitWindow.Height()* m_pDlg->m_fMakeBig/WB_HEIGH) ;
 						point2_idx++;
 					}
 				}
@@ -336,27 +336,27 @@ void DrawGraph::DrawTrack_Three( Bitmap* bmp, Graphics* graphics)
 					{
 						point1_last = 0;
 						point1[point1_idx].X = (REAL)(((buf[8+j*5]&0xff)|((buf[7+j*5]<<8)&0x0000ff00))-1);
-						point1[point1_idx].Y = (REAL)(456 - ((buf[10+j*5]&0xff)|((buf[9+j*5]<<8)&0x0000ff00)));
-						point1[point1_idx].X = (point1[point1_idx].X*m_pDlg->m_Rect_BitWindow.Width()* m_pDlg->m_fMakeBig/640) ;
-						point1[point1_idx].Y = (point1[point1_idx].Y*m_pDlg->m_Rect_BitWindow.Height()* m_pDlg->m_fMakeBig/456) ;
+						point1[point1_idx].Y = (REAL)(WB_HEIGH - ((buf[10+j*5]&0xff)|((buf[9+j*5]<<8)&0x0000ff00)));
+						point1[point1_idx].X = (point1[point1_idx].X*m_pDlg->m_Rect_BitWindow.Width()* m_pDlg->m_fMakeBig/WB_WIDTH) ;
+						point1[point1_idx].Y = (point1[point1_idx].Y*m_pDlg->m_Rect_BitWindow.Height()* m_pDlg->m_fMakeBig/WB_HEIGH) ;
 						point1_idx++;
 					}
 					else if(j==1)
 					{
 						point2_last = 0;
 						point2[point2_idx].X = (REAL)(((buf[8+j*5]&0xff)|((buf[7+j*5]<<8)&0x0000ff00))-1);
-						point2[point2_idx].Y = (REAL)(456 - ((buf[10+j*5]&0xff)|((buf[9+j*5]<<8)&0x0000ff00)));
-						point2[point2_idx].X = (point2[point2_idx].X*m_pDlg->m_Rect_BitWindow.Width()* m_pDlg->m_fMakeBig/640) ;
-						point2[point2_idx].Y = (point2[point2_idx].Y*m_pDlg->m_Rect_BitWindow.Height()* m_pDlg->m_fMakeBig/456) ;
+						point2[point2_idx].Y = (REAL)(WB_HEIGH - ((buf[10+j*5]&0xff)|((buf[9+j*5]<<8)&0x0000ff00)));
+						point2[point2_idx].X = (point2[point2_idx].X*m_pDlg->m_Rect_BitWindow.Width()* m_pDlg->m_fMakeBig/WB_WIDTH) ;
+						point2[point2_idx].Y = (point2[point2_idx].Y*m_pDlg->m_Rect_BitWindow.Height()* m_pDlg->m_fMakeBig/WB_HEIGH) ;
 						point2_idx++;
 					}
 					else
 					{
 						point3_last = 0;
 						point3[point3_idx].X = (REAL)(((buf[8+j*5]&0xff)|((buf[7+j*5]<<8)&0x0000ff00))-1);
-						point3[point3_idx].Y = (REAL)(456 - ((buf[10+j*5]&0xff)|((buf[9+j*5]<<8)&0x0000ff00)));
-						point3[point3_idx].X = (point3[point3_idx].X*m_pDlg->m_Rect_BitWindow.Width()* m_pDlg->m_fMakeBig/640) ;
-						point3[point3_idx].Y = (point3[point3_idx].Y*m_pDlg->m_Rect_BitWindow.Height()* m_pDlg->m_fMakeBig/456) ;
+						point3[point3_idx].Y = (REAL)(WB_HEIGH - ((buf[10+j*5]&0xff)|((buf[9+j*5]<<8)&0x0000ff00)));
+						point3[point3_idx].X = (point3[point3_idx].X*m_pDlg->m_Rect_BitWindow.Width()* m_pDlg->m_fMakeBig/WB_WIDTH) ;
+						point3[point3_idx].Y = (point3[point3_idx].Y*m_pDlg->m_Rect_BitWindow.Height()* m_pDlg->m_fMakeBig/WB_HEIGH) ;
 						point3_idx++;
 					}
 
@@ -525,58 +525,58 @@ void DrawGraph::Draw_Three(unsigned char* buf, Bitmap* bmp, Graphics* graphics)
 	for(int i =0;i<5;i++)
 	{
 		//TriangleA
-		PointTem[0].x = 0+128*i;
-		PointTem[0].y = 456-1;
+		PointTem[0].x = 0+128*i + EDGE_WIDTH;
+		PointTem[0].y = WB_HEIGH-1;
 		PointTem[1].y = 0;
 		PointTem[2].y = 0; 
 		for(int j=0;j<3;j++)
 		{
 			if((buf[2+j*2] !=0)||(buf[3+j*2] !=0))
 			{
-				PointTem[1].x = buf[2+j*2]+128*i-1;
-				PointTem[2].x = buf[3+j*2]+128*i-1;
+				PointTem[1].x = buf[2+j*2]+128*i-1 + EDGE_WIDTH;
+				PointTem[2].x = buf[3+j*2]+128*i-1 + EDGE_WIDTH;
 				DrawOnice(PointTem,bmp,graphics);
 			}
 		}
 		//TriangleB
-		PointTem[0].x = 128+128*i-1;
-		PointTem[0].y = 456-1;
+		PointTem[0].x = 128+128*i-1 + EDGE_WIDTH;
+		PointTem[0].y = WB_HEIGH-1;
 		PointTem[1].y = 0;
 		PointTem[2].y = 0; 
 		for(int j=0;j<3;j++)
 		{
 			if((buf[9+j*2] !=0)||(buf[10+j*2] !=0))
 			{
-				PointTem[1].x = buf[9+j*2]+128*i-1;
-				PointTem[2].x = buf[10+j*2]+128*i-1;
+				PointTem[1].x = buf[9+j*2]+128*i-1 + EDGE_WIDTH;
+				PointTem[2].x = buf[10+j*2]+128*i-1 + EDGE_WIDTH;
 				DrawOnice(PointTem,bmp,graphics);
 			}
 		}
 		//TriangleC
-		PointTem[0].x = 0+128*i;
+		PointTem[0].x = 0+128*i + EDGE_WIDTH;
 		PointTem[0].y = 0;
-		PointTem[1].y = 456-1;
-		PointTem[2].y = 456-1; 
+		PointTem[1].y = WB_HEIGH-1;
+		PointTem[2].y = WB_HEIGH-1; 
 		for(int j=0;j<3;j++)
 		{
 			if((buf[0x10+j*2] !=0)||(buf[0x11+j*2] !=0))
 			{
-				PointTem[1].x = buf[0x10+j*2]+128*i-1;
-				PointTem[2].x = buf[0x11+j*2]+128*i-1;
+				PointTem[1].x = buf[0x10+j*2]+128*i-1 + EDGE_WIDTH;
+				PointTem[2].x = buf[0x11+j*2]+128*i-1 + EDGE_WIDTH;
 				DrawOnice(PointTem,bmp,graphics);
 			}
 		}
 		//TriangleD
-		PointTem[0].x = 128+128*i-1;
+		PointTem[0].x = 128+128*i-1 + EDGE_WIDTH;
 		PointTem[0].y = 0;
-		PointTem[1].y = 456-1;
-		PointTem[2].y = 456-1; 
+		PointTem[1].y = WB_HEIGH-1;
+		PointTem[2].y = WB_HEIGH-1; 
 		for(int j=0;j<3;j++)
 		{
 			if((buf[0x17+j*2] !=0)||(buf[0x18+j*2] !=0))
 			{
-				PointTem[1].x = buf[0x17+j*2]+128*i-1;
-				PointTem[2].x = buf[0x18+j*2]+128*i-1;
+				PointTem[1].x = buf[0x17+j*2]+128*i-1 + EDGE_WIDTH;
+				PointTem[2].x = buf[0x18+j*2]+128*i-1 + EDGE_WIDTH;
 				DrawOnice(PointTem,bmp,graphics);
 			}
 		}
@@ -587,57 +587,57 @@ void DrawGraph::Draw_Three(unsigned char* buf, Bitmap* bmp, Graphics* graphics)
 	{
 		//TriangleA
 		PointTem[0].x = 0;
-		PointTem[0].y = 18*4+128*i-1;
-		PointTem[1].x = 640-1;
-		PointTem[2].x = 640-1; 
+		PointTem[0].y = 18*4+128*i-1 + EDGE_WIDTH;
+		PointTem[1].x = WB_WIDTH-1;
+		PointTem[2].x = WB_WIDTH-1; 
 		for(int j=0;j<3;j++)
 		{
 			if((buf[2+j*2] != 0)||(buf[3+j*2] != 0))
 			{
-				PointTem[1].y = 128*i+18*4-buf[2+j*2];
-				PointTem[2].y = 128*i+18*4-buf[3+j*2];
+				PointTem[1].y = 128*i+18*4-buf[2+j*2] + EDGE_WIDTH;
+				PointTem[2].y = 128*i+18*4-buf[3+j*2] + EDGE_WIDTH;
 				DrawOnice(PointTem,bmp,graphics);
 			}
 		}
 		//TriangleB
 		PointTem[0].x = 0;
-		PointTem[0].y = 128*i-128+18*4;
-		PointTem[1].x = 640-1;
-		PointTem[2].x = 640-1; 
+		PointTem[0].y = 128*i-128+18*4 + EDGE_WIDTH;
+		PointTem[1].x = WB_WIDTH-1;
+		PointTem[2].x = WB_WIDTH-1; 
 		for(int j=0;j<3;j++)
 		{
 			if((buf[9+j*2] !=0)||(buf[10+j*2] !=0))
 			{
-				PointTem[1].y = 128*i+18*4-buf[9+j*2];
-				PointTem[2].y = 128*i+18*4-buf[10+j*2];
+				PointTem[1].y = 128*i+18*4-buf[9+j*2] + EDGE_WIDTH;
+				PointTem[2].y = 128*i+18*4-buf[10+j*2] + EDGE_WIDTH;
 				DrawOnice(PointTem,bmp,graphics);
 			}
 		}
 		//TriangleC
-		PointTem[0].x = 640-1;
-		PointTem[0].y = 18*4+128*i;;
+		PointTem[0].x = WB_WIDTH-1;
+		PointTem[0].y = 18*4+128*i + EDGE_WIDTH;;
 		PointTem[1].x = 0;
 		PointTem[2].x = 0; 
 		for(int j=0;j<3;j++)
 		{
 			if((buf[0x10+j*2] !=0)||(buf[0x11+j*2] !=0))
 			{
-				PointTem[1].y = 128*i+18*4-buf[0x10+j*2];
-				PointTem[2].y = 128*i+18*4-buf[0x11+j*2];
+				PointTem[1].y = 128*i+18*4-buf[0x10+j*2] + EDGE_WIDTH;
+				PointTem[2].y = 128*i+18*4-buf[0x11+j*2] + EDGE_WIDTH;
 				DrawOnice(PointTem,bmp,graphics);
 			}
 		}
 		//TriangleD
-		PointTem[0].x = 640-1;
-		PointTem[0].y = 18*4+128*i-128;
+		PointTem[0].x = WB_WIDTH-1;
+		PointTem[0].y = 18*4+128*i-128 + EDGE_WIDTH;
 		PointTem[1].x = 0;
 		PointTem[2].x = 0; 
 		for(int j=0;j<3;j++)
 		{
 			if((buf[0x17+j*2] !=0)||(buf[0x18+j*2] !=0))
 			{
-				PointTem[1].y = 128*i+18*4-buf[0x17+j*2];
-				PointTem[2].y = 128*i+18*4-buf[0x18+j*2];
+				PointTem[1].y = 128*i+18*4-buf[0x17+j*2] + EDGE_WIDTH;
+				PointTem[2].y = 128*i+18*4-buf[0x18+j*2] + EDGE_WIDTH;
 				DrawOnice(PointTem,bmp,graphics);
 			}
 		}
@@ -648,57 +648,57 @@ void DrawGraph::Draw_Three(unsigned char* buf, Bitmap* bmp, Graphics* graphics)
 
 	//TriangleA
 	PointTem[0].x = 0;
-	PointTem[0].y = 18*4-1;
-	PointTem[1].x = 640-1;
-	PointTem[2].x = 640-1; 
+	PointTem[0].y = 18*4-1 + EDGE_WIDTH;
+	PointTem[1].x = WB_WIDTH-1;
+	PointTem[2].x = WB_WIDTH-1; 
 	for(int j=0;j<3;j++)
 	{
 		if((buf[2+j*2] != 0)||(buf[3+j*2] != 0))
 		{
-			PointTem[1].y = 18*4-buf[2+j*2];
-			PointTem[2].y = 18*4-buf[3+j*2];
+			PointTem[1].y = 18*4-buf[2+j*2] + EDGE_WIDTH;
+			PointTem[2].y = 18*4-buf[3+j*2] + EDGE_WIDTH;
 			DrawOnice(PointTem,bmp,graphics);
 		}
 	}
 	//TriangleB
 	PointTem[0].x = 0;
-	PointTem[0].y = 0;
-	PointTem[1].x = 640-1;
-	PointTem[2].x = 640-1; 
+	PointTem[0].y = 0 + EDGE_WIDTH;
+	PointTem[1].x = WB_WIDTH-1;
+	PointTem[2].x = WB_WIDTH-1; 
 	for(int j=0;j<3;j++)
 	{
 		if((buf[9+j*2] !=0)||(buf[10+j*2] !=0))
 		{
-			PointTem[1].y = 18*4-buf[9+j*2];
-			PointTem[2].y = 18*4-buf[10+j*2];
+			PointTem[1].y = 18*4-buf[9+j*2] + EDGE_WIDTH;
+			PointTem[2].y = 18*4-buf[10+j*2] + EDGE_WIDTH;
 			DrawOnice(PointTem,bmp,graphics);
 		}
 	}
 	//TriangleC
-	PointTem[0].x = 640-1;
-	PointTem[0].y = 18*4-1;
+	PointTem[0].x = WB_WIDTH-1;
+	PointTem[0].y = 18*4-1 + EDGE_WIDTH;
 	PointTem[1].x = 0;
 	PointTem[2].x = 0;
 	for(int j=0;j<3;j++)
 	{
 		if((buf[0x10+j*2] !=0)||(buf[0x11+j*2] !=0))
 		{
-			PointTem[1].y = 18*4-buf[0x10+j*2];
-			PointTem[2].y = 18*4-buf[0x11+j*2];
+			PointTem[1].y = 18*4-buf[0x10+j*2] + EDGE_WIDTH;
+			PointTem[2].y = 18*4-buf[0x11+j*2] + EDGE_WIDTH;
 			DrawOnice(PointTem,bmp,graphics);
 		}
 	}
 	//TriangleD
-	PointTem[0].x = 640-1;
-	PointTem[0].y = 0;
+	PointTem[0].x = WB_WIDTH-1;
+	PointTem[0].y = 0 + EDGE_WIDTH;
 	PointTem[1].x = 0;
 	PointTem[2].x = 0;
 	for(int j=0;j<3;j++)
 	{
 		if((buf[0x17+j*2] !=0)||(buf[0x18+j*2] !=0))
 		{
-			PointTem[1].y = 18*4-buf[0x17+j*2];
-			PointTem[2].y = 18*4-buf[0x18+j*2];
+			PointTem[1].y = 18*4-buf[0x17+j*2] + EDGE_WIDTH;
+			PointTem[2].y = 18*4-buf[0x18+j*2] + EDGE_WIDTH;
 			DrawOnice(PointTem,bmp,graphics);
 		}
 	}
@@ -726,58 +726,58 @@ void DrawGraph::Draw_Two(unsigned char* buf, Bitmap* bmp, Graphics* graphics)
 	for(int i =0;i<5;i++)
 	{
 		//TriangleA
-		PointTem[0].x = 0+128*i;
-		PointTem[0].y = 456-1;
+		PointTem[0].x = 0+128*i + EDGE_WIDTH;
+		PointTem[0].y = WB_HEIGH-1;
 		PointTem[1].y = 0;
 		PointTem[2].y = 0; 
 		for(int j=0;j<2;j++)
 		{
 			if((buf[2+j*2] !=0)||(buf[3+j*2] !=0))
 			{
-				PointTem[1].x = buf[2+j*2]+128*i-1;
-				PointTem[2].x = buf[3+j*2]+128*i-1;
+				PointTem[1].x = buf[2+j*2]+128*i-1 + EDGE_WIDTH;
+				PointTem[2].x = buf[3+j*2]+128*i-1 + EDGE_WIDTH;
 				DrawOnice(PointTem,bmp,graphics);
 			}
 		}
 		//TriangleB
-		PointTem[0].x = 128+128*i-1;
-		PointTem[0].y = 456-1;
+		PointTem[0].x = 128+128*i-1 + EDGE_WIDTH;
+		PointTem[0].y = WB_HEIGH-1;
 		PointTem[1].y = 0;
 		PointTem[2].y = 0; 
 		for(int j=0;j<2;j++)
 		{
 			if((buf[7+j*2] !=0)||(buf[8+j*2] !=0))
 			{
-				PointTem[1].x = buf[7+j*2]+128*i-1;
-				PointTem[2].x = buf[8+j*2]+128*i-1;
+				PointTem[1].x = buf[7+j*2]+128*i-1 + EDGE_WIDTH;
+				PointTem[2].x = buf[8+j*2]+128*i-1 + EDGE_WIDTH;
 				DrawOnice(PointTem,bmp,graphics);
 			}
 		}
 		//TriangleC
-		PointTem[0].x = 0+128*i;
+		PointTem[0].x = 0+128*i + EDGE_WIDTH;
 		PointTem[0].y = 0;
-		PointTem[1].y = 456-1;
-		PointTem[2].y = 456-1; 
+		PointTem[1].y = WB_HEIGH-1;
+		PointTem[2].y = WB_HEIGH-1; 
 		for(int j=0;j<2;j++)
 		{
 			if((buf[12+j*2] !=0)||(buf[13+j*2] !=0))
 			{
-				PointTem[1].x = buf[12+j*2]+128*i-1;
-				PointTem[2].x = buf[13+j*2]+128*i-1;
+				PointTem[1].x = buf[12+j*2]+128*i-1 + EDGE_WIDTH;
+				PointTem[2].x = buf[13+j*2]+128*i-1 + EDGE_WIDTH;
 				DrawOnice(PointTem,bmp,graphics);
 			}
 		}
 		//TriangleD
-		PointTem[0].x = 128+128*i-1;
+		PointTem[0].x = 128+128*i-1 + EDGE_WIDTH;
 		PointTem[0].y = 0;
-		PointTem[1].y = 456-1;
-		PointTem[2].y = 456-1; 
+		PointTem[1].y = WB_HEIGH-1;
+		PointTem[2].y = WB_HEIGH-1; 
 		for(int j=0;j<2;j++)
 		{
 			if((buf[17+j*2] !=0)||(buf[18+j*2] !=0))
 			{
-				PointTem[1].x = buf[17+j*2]+128*i-1;
-				PointTem[2].x = buf[18+j*2]+128*i-1;
+				PointTem[1].x = buf[17+j*2]+128*i-1 + EDGE_WIDTH;
+				PointTem[2].x = buf[18+j*2]+128*i-1 + EDGE_WIDTH;
 				DrawOnice(PointTem,bmp,graphics);
 			}
 		}
@@ -788,57 +788,57 @@ void DrawGraph::Draw_Two(unsigned char* buf, Bitmap* bmp, Graphics* graphics)
 	{
 		//TriangleA
 		PointTem[0].x = 0;
-		PointTem[0].y = 18*4+128*i-1;
-		PointTem[1].x = 640-1;
-		PointTem[2].x = 640-1; 
+		PointTem[0].y = 18*4+128*i-1 + EDGE_WIDTH;
+		PointTem[1].x = WB_WIDTH-1;
+		PointTem[2].x = WB_WIDTH-1; 
 		for(int j=0;j<2;j++)
 		{
 			if((buf[2+j*2] != 0)||(buf[3+j*2] != 0))
 			{
-				PointTem[1].y = 128*i+18*4-buf[2+j*2];
-				PointTem[2].y = 128*i+18*4-buf[3+j*2];
+				PointTem[1].y = 128*i+18*4-buf[2+j*2] + EDGE_WIDTH;
+				PointTem[2].y = 128*i+18*4-buf[3+j*2] + EDGE_WIDTH;
 				DrawOnice(PointTem,bmp,graphics);
 			}
 		}
 		//TriangleB
 		PointTem[0].x = 0;
-		PointTem[0].y = 128*i-128+18*4;
-		PointTem[1].x = 640-1;
-		PointTem[2].x = 640-1; 
+		PointTem[0].y = 128*i-128+18*4 + EDGE_WIDTH;
+		PointTem[1].x = WB_WIDTH-1;
+		PointTem[2].x = WB_WIDTH-1; 
 		for(int j=0;j<2;j++)
 		{
 			if((buf[7+j*2] !=0)||(buf[8+j*2] !=0))
 			{
-				PointTem[1].y = 128*i+18*4-buf[7+j*2];
-				PointTem[2].y = 128*i+18*4-buf[8+j*2];
+				PointTem[1].y = 128*i+18*4-buf[7+j*2] + EDGE_WIDTH;
+				PointTem[2].y = 128*i+18*4-buf[8+j*2] + EDGE_WIDTH;
 				DrawOnice(PointTem,bmp,graphics);
 			}
 		}
 		//TriangleC
-		PointTem[0].x = 640-1;
-		PointTem[0].y = 18*4+128*i;;
+		PointTem[0].x = WB_WIDTH-1;
+		PointTem[0].y = 18*4+128*i + EDGE_WIDTH;
 		PointTem[1].x = 0;
 		PointTem[2].x = 0; 
 		for(int j=0;j<2;j++)
 		{
 			if((buf[12+j*2] !=0)||(buf[13+j*2] !=0))
 			{
-				PointTem[1].y = 128*i+18*4-buf[12+j*2];
-				PointTem[2].y = 128*i+18*4-buf[13+j*2];
+				PointTem[1].y = 128*i+18*4-buf[12+j*2] + EDGE_WIDTH;
+				PointTem[2].y = 128*i+18*4-buf[13+j*2] + EDGE_WIDTH;
 				DrawOnice(PointTem,bmp,graphics);
 			}
 		}
 		//TriangleD
-		PointTem[0].x = 640-1;
-		PointTem[0].y = 18*4+128*i-128;
+		PointTem[0].x = WB_WIDTH-1;
+		PointTem[0].y = 18*4+128*i-128 + EDGE_WIDTH;
 		PointTem[1].x = 0;
 		PointTem[2].x = 0; 
 		for(int j=0;j<2;j++)
 		{
 			if((buf[17+j*2] !=0)||(buf[18+j*2] !=0))
 			{
-				PointTem[1].y = 128*i+18*4-buf[17+j*2];
-				PointTem[2].y = 128*i+18*4-buf[18+j*2];
+				PointTem[1].y = 128*i+18*4-buf[17+j*2] + EDGE_WIDTH;
+				PointTem[2].y = 128*i+18*4-buf[18+j*2] + EDGE_WIDTH;
 				DrawOnice(PointTem,bmp,graphics);
 			}
 		}
@@ -849,57 +849,57 @@ void DrawGraph::Draw_Two(unsigned char* buf, Bitmap* bmp, Graphics* graphics)
 
 	//TriangleA
 	PointTem[0].x = 0;
-	PointTem[0].y = 18*4-1;
-	PointTem[1].x = 640-1;
-	PointTem[2].x = 640-1; 
+	PointTem[0].y = 18*4-1 + EDGE_WIDTH;
+	PointTem[1].x = WB_WIDTH-1;
+	PointTem[2].x = WB_WIDTH-1; 
 	for(int j=0;j<2;j++)
 	{
 		if((buf[2+j*2] != 0)||(buf[3+j*2] != 0))
 		{
-			PointTem[1].y = 18*4-buf[2+j*2];
-			PointTem[2].y = 18*4-buf[3+j*2];
+			PointTem[1].y = 18*4-buf[2+j*2] + EDGE_WIDTH;
+			PointTem[2].y = 18*4-buf[3+j*2] + EDGE_WIDTH;
 			DrawOnice(PointTem,bmp,graphics);
 		}
 	}
 	//TriangleB
 	PointTem[0].x = 0;
-	PointTem[0].y = 0;
-	PointTem[1].x = 640-1;
-	PointTem[2].x = 640-1; 
+	PointTem[0].y = 0 + EDGE_WIDTH;
+	PointTem[1].x = WB_WIDTH-1;
+	PointTem[2].x = WB_WIDTH-1; 
 	for(int j=0;j<2;j++)
 	{
 		if((buf[7+j*2] !=0)||(buf[8+j*2] !=0))
 		{
-			PointTem[1].y = 18*4-buf[7+j*2];
-			PointTem[2].y = 18*4-buf[8+j*2];
+			PointTem[1].y = 18*4-buf[7+j*2] + EDGE_WIDTH;
+			PointTem[2].y = 18*4-buf[8+j*2] + EDGE_WIDTH;
 			DrawOnice(PointTem,bmp,graphics);
 		}
 	}
 	//TriangleC
-	PointTem[0].x = 640-1;
-	PointTem[0].y = 18*4-1;
+	PointTem[0].x = WB_WIDTH-1;
+	PointTem[0].y = 18*4-1 + EDGE_WIDTH;
 	PointTem[1].x = 0;
 	PointTem[2].x = 0;
 	for(int j=0;j<2;j++)
 	{
 		if((buf[12+j*2] !=0)||(buf[13+j*2] !=0))
 		{
-			PointTem[1].y = 18*4-buf[12+j*2];
-			PointTem[2].y = 18*4-buf[13+j*2];
+			PointTem[1].y = 18*4-buf[12+j*2] + EDGE_WIDTH;
+			PointTem[2].y = 18*4-buf[13+j*2] + EDGE_WIDTH;
 			DrawOnice(PointTem,bmp,graphics);
 		}
 	}
 	//TriangleD
-	PointTem[0].x = 640-1;
-	PointTem[0].y = 0;
+	PointTem[0].x = WB_WIDTH-1;
+	PointTem[0].y = 0 + EDGE_WIDTH;
 	PointTem[1].x = 0;
 	PointTem[2].x = 0;
 	for(int j=0;j<2;j++)
 	{
 		if((buf[17+j*2] !=0)||(buf[18+j*2] !=0))
 		{
-			PointTem[1].y = 18*4-buf[17+j*2];
-			PointTem[2].y = 18*4-buf[18+j*2];
+			PointTem[1].y = 18*4-buf[17+j*2] + EDGE_WIDTH;
+			PointTem[2].y = 18*4-buf[18+j*2] + EDGE_WIDTH;
 			DrawOnice(PointTem,bmp,graphics);
 		}
 	}
@@ -1043,8 +1043,8 @@ void DrawGraph::DrawOnice(POINT* point,Bitmap* bmp,Graphics* graphics )
 
 	for(int i = 0;i<3;i++)
 	{
-		pointf[i].X = (point[i].x*m_pDlg->m_Rect_BitWindow.Width()*m_pDlg->m_fMakeBig/640) ;
-		pointf[i].Y = (point[i].y*m_pDlg->m_Rect_BitWindow.Height()* m_pDlg->m_fMakeBig/456) ;
+		pointf[i].X = (point[i].x*m_pDlg->m_Rect_BitWindow.Width()*m_pDlg->m_fMakeBig/WB_WIDTH) ;
+		pointf[i].Y = (point[i].y*m_pDlg->m_Rect_BitWindow.Height()* m_pDlg->m_fMakeBig/WB_HEIGH) ;
 	}
 
 	graphics->FillPolygon(&m_BrushBlue,pointf,3,FillModeAlternate);	
@@ -1060,9 +1060,9 @@ void DrawGraph::DrawOnice(POINT* point,Bitmap* bmp,Graphics* graphics )
 void DrawGraph::DrawPoint(POINT* point,Bitmap* bmp,Graphics* graphics,int order )
 {
 	SolidBrush *brush;
-	point->y = 456 - point->y; //两种坐标转换
-	int x = (int)(point[0].x*m_pDlg->m_Rect_BitWindow.Width()/640 * m_pDlg->m_fMakeBig)-POINT_SIZE_FINALLY/2;
-	int y = (int)(point[0].y*m_pDlg->m_Rect_BitWindow.Height()/456 * m_pDlg->m_fMakeBig)-POINT_SIZE_FINALLY/2;
+	point->y = WB_HEIGH - point->y; //两种坐标转换
+	int x = (int)(point[0].x*m_pDlg->m_Rect_BitWindow.Width()/WB_WIDTH * m_pDlg->m_fMakeBig)-POINT_SIZE_FINALLY/2;
+	int y = (int)(point[0].y*m_pDlg->m_Rect_BitWindow.Height()/WB_HEIGH * m_pDlg->m_fMakeBig)-POINT_SIZE_FINALLY/2;
 	switch(order&0x0000000f)
 	{
 	case 0x0: brush = &m_BrushRed; break;

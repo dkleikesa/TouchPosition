@@ -28,8 +28,8 @@
 #define LONG_DIA_THRESHOLD  40	//长条菱形，通过一个方向的坐标距离来判定是否相交
 
 #define LENGTH_PRE		128
-#define TOTAL_LENGTH	LENGTH_PRE*SCAN_X_SQUARE_NUM	//白板总宽度
-#define TATAL_HEIGHT	LENGTH_PRE*(SCAN_Y_SQUARE_NUM-1) + 72 //白板总高度
+#define TOTAL_LENGTH	(LENGTH_PRE*SCAN_X_SQUARE_NUM +16)	//白板总宽度
+#define TATAL_HEIGHT	(LENGTH_PRE*(SCAN_Y_SQUARE_NUM-1) + 72 + 16) //白板总高度
 
 
 #define NULL 0 
@@ -221,6 +221,7 @@ for(m=PointNumTmp;m< PointNumTmp_t;m++)	\
 		ExcDistance(DistanceTmp,PointNumTmp,m);	\
 		PointNumTmp++;	\
 		PRINTFF("X add lost point %08x no point\r\n",j,k,DiamondNumTmp);	\
+		break;\
 	}	\
 }
 
@@ -232,6 +233,7 @@ for(m=PointNumTmp;m< PointNumTmp_t;m++)	\
 	ExcDistance(DistanceTmp,PointNumTmp,m);	\
 	PointNumTmp++;	\
 	PRINTFF("Y add lost point %08x no point\r\n",j,k,DiamondNumTmp);	\
+	break;\
 }	\
 }
 
