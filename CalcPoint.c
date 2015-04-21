@@ -301,7 +301,7 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 				}
 
 			}
-			tmp = LENGTH_PRE;
+			tmp = LENGTH_PRE + EXPOS_OFFSET;
 			if ((DIAMOND_X_GET_P(DiamondBuf,i,j,2).x > tmp)||((DIAMOND_X_GET_P(DiamondBuf,i,j,0).x==tmp)&&(DIAMOND_X_GET_P(DiamondBuf,i,j,3).x==tmp)))
 			{
 				xNeedSub[i]++;
@@ -404,7 +404,7 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 				}
 
 			}
-			tmp = LENGTH_PRE;
+			tmp = LENGTH_PRE + EXPOS_OFFSET;
 			if ((DIAMOND_Y_GET_P(DiamondBuf,i,j,2).y > tmp)||((DIAMOND_Y_GET_P(DiamondBuf,i,j,0).y==tmp)&&(DIAMOND_Y_GET_P(DiamondBuf,i,j,3).y==tmp)))
 			{
 				yNeedSub[i]++;
@@ -563,6 +563,42 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 		}
 	}
 
+#if 0
+	for(i = PointNumTmp;i < disNUM_f; i++)
+	{	
+		PRINTFF("X ratio = %d \r\n",DIAMON_WRH_X(DIAMOND_X_GET_D(DiamondBuf,XPoint[DistanceTmp[i].XPos].Rec,XPoint[DistanceTmp[i].XPos].Diamond)));
+		if(DIAMON_WRH_X(DIAMOND_X_GET_D(DiamondBuf,XPoint[DistanceTmp[i].XPos].Rec,XPoint[DistanceTmp[i].XPos].Diamond))>=DIAMON_RATIO)
+		{
+			//PRINTFF("X new point %d\r\n",(XPoint[DistanceTmp[i].XPos].Point.x - YPoint[DistanceTmp[i].YPos].Point.x));
+			if ((abs(XPoint[DistanceTmp[i].XPos].Point.x - YPoint[DistanceTmp[i].YPos].Point.x) <= LONG_DIA_THRESHOLD) &&
+				(YPoint[DistanceTmp[i].YPos].Point.y <=DIAMOND_X_GET_D(DiamondBuf,XPoint[DistanceTmp[i].XPos].Rec,XPoint[DistanceTmp[i].XPos].Diamond).strPoint0.y)&&
+				(YPoint[DistanceTmp[i].YPos].Point.y >=DIAMOND_X_GET_D(DiamondBuf,XPoint[DistanceTmp[i].XPos].Rec,XPoint[DistanceTmp[i].XPos].Diamond).strPoint3.y))
+			{
+				PRINTFF("X new point\r\n");
+				ExcDistance(DistanceTmp,PointNumTmp,i);
+				PointNumTmp++;
+			}
+		}
+		PRINTFF("Y ratio = %d \r\n",DIAMON_WRH_Y(DIAMOND_Y_GET_D(DiamondBuf,YPoint[DistanceTmp[i].YPos].Rec,YPoint[DistanceTmp[i].YPos].Diamond)));
+		if(DIAMON_WRH_Y(DIAMOND_Y_GET_D(DiamondBuf,YPoint[DistanceTmp[i].YPos].Rec,YPoint[DistanceTmp[i].YPos].Diamond))>=DIAMON_RATIO)
+		{
+			//PRINTFF("Y new point %d\r\n",(XPoint[DistanceTmp[i].XPos].Point.y - YPoint[DistanceTmp[i].YPos].Point.y));
+			if ((abs(XPoint[DistanceTmp[i].XPos].Point.y - YPoint[DistanceTmp[i].YPos].Point.y) <= LONG_DIA_THRESHOLD)&&
+				(YPoint[DistanceTmp[i].YPos].Point.x <= DIAMOND_Y_GET_D(DiamondBuf,YPoint[DistanceTmp[i].YPos].Rec,YPoint[DistanceTmp[i].YPos].Diamond).strPoint0.x)&&
+				(YPoint[DistanceTmp[i].YPos].Point.x >= DIAMOND_Y_GET_D(DiamondBuf,YPoint[DistanceTmp[i].YPos].Rec,YPoint[DistanceTmp[i].YPos].Diamond).strPoint3.x))
+			{
+				PRINTFF("Y new point\r\n");
+				ExcDistance(DistanceTmp,PointNumTmp,i);
+				PointNumTmp++;
+			}
+		}
+	}
+
+
+#endif
+
+
+#if 1
 	shell_sort(DistanceTmp,disNUM);	//排序
 	PointNumTmp = GetThresholdPos(DistanceTmp, disNUM,DISTANCE_THRESHOLD);	//获取点个数
 	PRINTFF("xPoint=%d yPoint=%d PointNum=%d PointNumTmp=%d\r\n",xPointNumSum,yPointNumSum,PointNum,PointNumTmp);
@@ -570,6 +606,8 @@ int CalcPoint(CALC_DIAMOND_BUF *DiamondBuf,struct PT_BUF *point)
 	/*2f75 少点且通过距离判断点错误 需要通过投影来确定*/ 
 	/*2c75 少点通过且距离可以判断出正确点*/
 	/*2575 菱形复用*/
+
+
 RESTART_LESS:
 	//采样误差造成，可能会少点 通过扩大阈值来 补充点
 	if (PointNumTmp < PointNum)	
@@ -1166,7 +1204,6 @@ RESTART_LESS:
 
 	}
 #endif
-
 
 	//可能存在边界点，菱形细长，需要特殊处理
 	if (PointNumTmp < PointNum)
@@ -1779,7 +1816,7 @@ RESTART_MORE:
 #endif
 	}
 
-
+#endif
 
 	if (PointNumTmp>PointNum)
 	{
@@ -1841,6 +1878,34 @@ COPY_POINT:
 					point[k].pt_val.y  = AdjustYRec_Y(&DiamondBuf->strYSquareDiamond[YPoint[DistanceTmp[k].YPos].Rec].strDiamondPoint[YPoint[DistanceTmp[k].YPos].Diamond],
 						XPoint[DistanceTmp[k].XPos].Point.x,YPoint[DistanceTmp[j].YPos].Rec);
 				}
+			}
+		}
+	}
+#endif
+
+#if 0
+	for (j = 0;j < PointNumTmp;j++)
+	{
+		if(DIAMON_WRH_Y(DIAMOND_Y_GET_D(DiamondBuf,YPoint[DistanceTmp[i].YPos].Rec,YPoint[DistanceTmp[i].YPos].Diamond))>=DIAMON_RATIO)
+		{		
+			if(((DIAMOND_X_GET_D(DiamondBuf,XPoint[DistanceTmp[j].XPos].Rec,XPoint[DistanceTmp[j].XPos].Diamond).strPoint0.y -
+				DIAMOND_X_GET_D(DiamondBuf,XPoint[DistanceTmp[j].XPos].Rec,XPoint[DistanceTmp[j].XPos].Diamond).strPoint3.y)<SMALL_THRESHOLD_L)&&
+				((DIAMOND_X_GET_D(DiamondBuf,XPoint[DistanceTmp[j].XPos].Rec,XPoint[DistanceTmp[j].XPos].Diamond).strPoint2.x -
+				DIAMOND_X_GET_D(DiamondBuf,XPoint[DistanceTmp[j].XPos].Rec,XPoint[DistanceTmp[j].XPos].Diamond).strPoint1.x)<SMALL_THRESHOLD_W))
+			{
+				point[j].pt_val.x = XPoint[DistanceTmp[j].XPos].Point.x;
+				point[j].pt_val.y = XPoint[DistanceTmp[j].XPos].Point.y;
+			}
+		}
+		if(DIAMON_WRH_X(DIAMOND_X_GET_D(DiamondBuf,XPoint[DistanceTmp[j].XPos].Rec,XPoint[DistanceTmp[j].XPos].Diamond))>=DIAMON_RATIO)
+		{		
+			if(((DIAMOND_Y_GET_D(DiamondBuf,YPoint[DistanceTmp[j].YPos].Rec,YPoint[DistanceTmp[j].YPos].Diamond).strPoint0.x - 
+				DIAMOND_Y_GET_D(DiamondBuf,YPoint[DistanceTmp[j].YPos].Rec,YPoint[DistanceTmp[j].YPos].Diamond).strPoint3.x) <SMALL_THRESHOLD_L)&&
+				((DIAMOND_Y_GET_D(DiamondBuf,YPoint[DistanceTmp[j].YPos].Rec,YPoint[DistanceTmp[j].YPos].Diamond).strPoint2.y - 
+				DIAMOND_Y_GET_D(DiamondBuf,YPoint[DistanceTmp[j].YPos].Rec,YPoint[DistanceTmp[j].YPos].Diamond).strPoint1.y) <SMALL_THRESHOLD_W))
+			{
+				point[j].pt_val.x = YPoint[DistanceTmp[j].YPos].Point.x;
+				point[j].pt_val.y = YPoint[DistanceTmp[j].YPos].Point.y;
 			}
 		}
 	}

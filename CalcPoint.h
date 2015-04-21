@@ -26,10 +26,13 @@
 
 #define DIAMON_RATIO		23	//菱形的长宽比超过一定程度就说明这是个 细长菱形，需要用特殊方法判定点
 #define LONG_DIA_THRESHOLD  40	//长条菱形，通过一个方向的坐标距离来判定是否相交
+#define SMALL_THRESHOLD_L	40	//如果有一个方向菱形很小，那么就用这个菱形来计算最终点ID 长小于30
+#define SMALL_THRESHOLD_W	20	//如果有一个方向菱形很小，那么就用这个菱形来计算最终点ID 宽小于10
 
+#define EXPOS_OFFSET 8
 #define LENGTH_PRE		128
-#define TOTAL_LENGTH	(LENGTH_PRE*SCAN_X_SQUARE_NUM +16)	//白板总宽度
-#define TATAL_HEIGHT	(LENGTH_PRE*(SCAN_Y_SQUARE_NUM-1) + 72 + 16) //白板总高度
+#define TOTAL_LENGTH	(LENGTH_PRE*SCAN_X_SQUARE_NUM +EXPOS_OFFSET*2)	//白板总宽度
+#define TATAL_HEIGHT	(LENGTH_PRE*(SCAN_Y_SQUARE_NUM-1) + 72 + EXPOS_OFFSET*2) //白板总高度
 
 
 #define NULL 0 
